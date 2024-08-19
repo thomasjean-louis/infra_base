@@ -3,11 +3,7 @@ provider "aws" {
 }
 
 terraform {
-  backend "s3" {
-    bucket = "terraform-tjl"
-    key    = "terraform_${var.deployment_branch}.tfstate"
-    region = var.region
-  }
+  backend "s3" {}
 }
 
 module "ecr" {
