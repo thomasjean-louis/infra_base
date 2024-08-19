@@ -46,8 +46,14 @@ data "aws_iam_policy_document" "ecr_policy_document" {
   }
 
   statement {
-    effect    = "Allow"
-    actions   = ["ecr:InitiateLayerUpload"]
+    effect = "Allow"
+    actions = [
+      "ecr:CompleteLayerUpload",
+      "ecr:UploadLayerPart",
+      "ecr:InitiateLayerUpload",
+      "ecr:BatchCheckLayerAvailability",
+      "ecr:PutImage"
+    ]
     resources = ["arn:aws:ecr:${var.region}:${var.account_id}:repository/*"]
   }
 }
