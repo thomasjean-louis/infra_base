@@ -2,6 +2,10 @@ variable "account_id" {
   type = string
 }
 
+variable "region" {
+  type = string
+}
+
 variable "game_server_name_image" {
   type = string
 }
@@ -39,6 +43,12 @@ data "aws_iam_policy_document" "ecr_policy_document" {
     effect    = "Allow"
     actions   = ["ecr:GetAuthorizationToken"]
     resources = ["*"]
+  }
+
+  statement {
+    effect    = "Allow"
+    actions   = ["ecr:InitiateLayerUpload"]
+    resources = ["arn:aws:ecr:${var.region}:${var.account_id}:repository/*"]
   }
 }
 

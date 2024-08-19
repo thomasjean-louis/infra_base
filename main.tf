@@ -20,6 +20,7 @@ module "ecr" {
   game_server_name_image = var.game_server_name_image
   proxy_name_image       = var.proxy_name_image
   account_id             = local.account_id
+  region                 = var.region
   deployment_branch      = var.deployment_branch
 }
 
