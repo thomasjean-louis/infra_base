@@ -1,0 +1,19 @@
+name: "infraWorkflow"
+on:
+  push:
+  workflow_dispatch: {}
+
+jobs:
+  deploy:
+    environment: ${{ github.ref_name }}
+    runs-on: ubuntu-latest
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.ACCESS_KEY_INFRA }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.SECRET_ACCESS_KEY_INFRA }}
+
+    steps:
+      - run: 'echo "ENV: ${{ github.ref_name }}"'
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - run: terraform init -backend-config="access_key=${{ secrets.ACCESS_KEY_STATE }}" -backend-config="secret_key=${{ secrets.SECRET_ACCESS_KEY_STATE }}"
+      - run: terraform apply -auto-approve
