@@ -19,3 +19,6 @@ variable "proxy_name_image" {
   type      = string
   sensitive = true
 }
+
+
+
