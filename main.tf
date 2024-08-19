@@ -24,5 +24,11 @@ module "ecr" {
   deployment_branch      = var.deployment_branch
 }
 
+module "iam" {
+  source            = "./iam"
+  account_id        = local.account_id
+  deployment_branch = var.deployment_branch
+}
+
 
 
