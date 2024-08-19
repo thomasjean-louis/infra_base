@@ -34,6 +34,22 @@ resource "aws_iam_user" "terraform_infra_user" {
   }
 }
 
+data "aws_iam_policy_document" "ecr_policy_document" {
+  statement {
+    effect    = "Allow"
+    actions   = ["ecr:GetAuthorizationToken"]
+    resources = ["*"]
+  }
+}
+
+
+resource "aws_iam_user_policy" "ecr_policy" {
+  name   = "ecr_policy_${var.deployment_branch}"
+  user   = aws_iam_user.terraform_infra_user.name
+  policy = data.aws_iam_policy_document.ecr_policy_document.json
+}
+
+
 
 
 
