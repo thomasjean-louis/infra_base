@@ -3,6 +3,11 @@ variable "region" {
   default = "eu-west-3"
 }
 
+variable "app_name" {
+  type      = string
+  sensitive = true
+}
+
 variable "deployment_branch" {
   type      = string
   sensitive = true
@@ -24,6 +29,13 @@ variable "game_server_name_image" {
 variable "proxy_name_image" {
   type      = string
   sensitive = true
+}
+
+## Github
+
+variable "token_github" {
+  type      = string
+  sensitive = true  
 }
 
 
