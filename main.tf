@@ -30,5 +30,10 @@ module "iam" {
   deployment_branch = var.deployment_branch
 }
 
+module "r53" {
+  source           = "./r53"
+  hosted_zone_name = var.hosted_zone_name
+}
+
 
 

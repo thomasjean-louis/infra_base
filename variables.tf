@@ -8,8 +8,14 @@ variable "deployment_branch" {
   sensitive = true
 }
 
-## ECR
+## Route 53
 
+variable "hosted_zone_name" {
+  type      = string
+  sensitive = true
+}
+
+## ECR
 variable "game_server_name_image" {
   type      = string
   sensitive = true
