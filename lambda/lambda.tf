@@ -50,6 +50,13 @@ resource "aws_lambda_function" "lambda_create_infra" {
   handler          = "create_infra.lambda_handler"
   runtime          = "python3.9"
   timeout          = 20
+
+  environment {
+    variables = {
+      TOKEN_GITHUB             = var.token_github
+      DEPLOYMENT_BRANCH = var.deployment_branch
+    }
+  }
 }
 
 # Delete terraform infra
@@ -103,11 +110,10 @@ resource "aws_lambda_permission" "allow_eventbridge_delete" {
 
 # Create stack
 
-# Delete stack
 resource "aws_cloudwatch_event_rule" "create_infra_rule" {
   name        = "create_infra_rule"
 
-  schedule_expression = "cron(41 8 ? * MON-FRI *)"
+  schedule_expression = "cron(48 8 ? * MON-FRI *)"
 }
 
 
