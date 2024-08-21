@@ -113,7 +113,7 @@ resource "aws_lambda_permission" "allow_eventbridge_delete" {
 resource "aws_cloudwatch_event_rule" "create_infra_rule" {
   name        = "create_infra_rule"
 
-  schedule_expression = "cron(48 8 ? * MON-FRI *)"
+  schedule_expression = "cron(55 6 ? * MON-FRI *)"
 }
 
 
