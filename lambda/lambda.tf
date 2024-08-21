@@ -76,3 +76,30 @@ resource "aws_lambda_function" "lambda_delete_infra" {
   }
 }
 
+## Set Scheduler
+
+# Delete stack
+resource "aws_cloudwatch_event_rule" "delete_infra_rule" {
+  name        = "delete_infra_rule"
+
+  schedule_expression = "cron(16 8 * * *)"
+}
+
+
+resource "aws_cloudwatch_event_target" "delete_infra_lambda_target" {
+  rule      = aws_cloudwatch_event_rule.delete_infra_rule.name
+  target_id = "SendToLambda"
+  arn       = aws_lambda_function.lambda_delete_infra.arn
+}
+
+resource "aws_lambda_permission" "allow_eventbridge" {
+  statement_id  = "AllowExecutionFromEventBridge"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.lambda_delete_infra.function_name
+  principal     = "events.amazonaws.com"
+  source_arn    = aws_cloudwatch_event_rule.delete_infra_rule.arn
+}
+
+
+# Create stack
+
