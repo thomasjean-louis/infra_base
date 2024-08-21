@@ -82,7 +82,7 @@ resource "aws_lambda_function" "lambda_delete_infra" {
 resource "aws_cloudwatch_event_rule" "delete_infra_rule" {
   name        = "delete_infra_rule"
 
-  schedule_expression = "cron(0 16 * * MON-FRI *)"
+  schedule_expression = "cron(0 16 ? * MON-FRI *)"
 }
 
 
@@ -107,7 +107,7 @@ resource "aws_lambda_permission" "allow_eventbridge_delete" {
 resource "aws_cloudwatch_event_rule" "create_infra_rule" {
   name        = "create_infra_rule"
 
-  schedule_expression = "cron(37 8 * * MON-FRI *)"
+  schedule_expression = "cron(38 8 ? * MON-FRI *)"
 }
 
 
