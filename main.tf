@@ -10,8 +10,14 @@ terraform {
 ## Global variables
 data "aws_caller_identity" "account_data" {}
 
+data "aws_route53_zone" "project_route_zone" {
+  name         = var.hosted_zone_name
+  private_zone = false
+}
+
 locals {
   account_id = data.aws_caller_identity.account_data.account_id
+  hosted_zone_id = data.aws_route53_zone.project_route_zone.zone_id
 }
 
 ## Modules
@@ -40,7 +46,9 @@ module "lambda" {
   app_name = var.app_name
   deployment_branch = var.deployment_branch
   token_github = var.token_github
+  hosted_zone_id = local.hosted_zone_id
 }
+
 
 
 

@@ -11,6 +11,10 @@ variable "token_github" {
   type = string
 }
 
+variable "hosted_zone_id" {
+  type = string
+}
+
 
 # iam Lambda role
 resource "aws_iam_role" "lambda_infra_role" {
@@ -79,6 +83,7 @@ resource "aws_lambda_function" "lambda_delete_infra" {
     variables = {
       TOKEN_GITHUB             = var.token_github
       DEPLOYMENT_BRANCH = var.deployment_branch
+      HOSTED_ZONE_ID = var.hosted_zone_id
     }
   }
 }
