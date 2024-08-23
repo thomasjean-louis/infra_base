@@ -51,7 +51,8 @@ resource "aws_iam_role_policy" "lambda_infra_role_policy" {
     Statement = [
       {
         Action = [
-          "route53:ListResourceRecordSets"
+          "route53:ListResourceRecordSets",
+          "route53:ChangeResourceRecordSets"
         ]
         Effect   = "Allow"
         Resource = "arn:aws:route53:::hostedzone/${var.hosted_zone_id}"
