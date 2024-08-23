@@ -11,6 +11,10 @@ variable "token_github" {
   type = string
 }
 
+variable "hosted_zone_name" {
+  type = string
+}
+
 variable "hosted_zone_id" {
   type = string
 }
@@ -36,6 +40,26 @@ resource "aws_iam_role" "lambda_infra_role" {
     ]
   })
 }
+
+# IAM role
+resource "aws_iam_role_policy" "lambda_infra_role_policy" {
+  name = "${var.app_name}_lambda_infra_${var.deployment_branch}"
+  role = aws_iam_role.lambda_infra_role.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = [
+          "route53:ListResourceRecordSets"
+        ]
+        Effect   = "Allow"
+        Resource = "arn:aws:route53:::hostedzone:${var.hosted_zone_name}"
+      },
+    ]
+  })
+}
+
 
 
 
