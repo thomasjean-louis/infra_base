@@ -52,7 +52,7 @@ def lambda_handler(event, context):
                           'Value': record['ResourceRecords'][0]['Value'],
                       },
                   ],
-                  'TTL': record['ResourceRecords'][0]['TTL'],
+                  'TTL': record['TTL'],
                   'Type': 'CNAME',
               },
            },
