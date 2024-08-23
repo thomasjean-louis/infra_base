@@ -6,26 +6,26 @@ import boto3
 
 def lambda_handler(event, context):
   
-  # Destroy terraform stack
-  url = "https://api.github.com/repos/thomasjean-louis/infra/actions/workflows/deleteResources.yml/dispatches"
+  # # Destroy terraform stack
+  # url = "https://api.github.com/repos/thomasjean-louis/infra/actions/workflows/deleteResources.yml/dispatches"
   
-  values = {"ref": os.environ["DEPLOYMENT_BRANCH"],}
-  headers = {
-    "Accept": "application/vnd.github+json",
-    "Authorization": "Bearer "+os.environ["TOKEN_GITHUB"],
-    "X-GitHub-Api-Version": "2022-11-28",
-  }
+  # values = {"ref": os.environ["DEPLOYMENT_BRANCH"],}
+  # headers = {
+  #   "Accept": "application/vnd.github+json",
+  #   "Authorization": "Bearer "+os.environ["TOKEN_GITHUB"],
+  #   "X-GitHub-Api-Version": "2022-11-28",
+  # }
   
-  data = json.dumps(values).encode("utf-8")
-  pprint(data)
+  # data = json.dumps(values).encode("utf-8")
+  # pprint(data)
 
-  try:
-    req = urllib.request.Request(url, data, headers)
-    with urllib.request.urlopen(req) as f:
-        res = f.read()
-    pprint(res.decode())
-  except Exception as e:
-    pprint(e)
+  # try:
+  #   req = urllib.request.Request(url, data, headers)
+  #   with urllib.request.urlopen(req) as f:
+  #       res = f.read()
+  #   pprint(res.decode())
+  # except Exception as e:
+  #   pprint(e)
 
   # Remove acm-validation Records
   client53 = boto3.client('route53')
