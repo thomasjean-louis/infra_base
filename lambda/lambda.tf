@@ -54,7 +54,7 @@ resource "aws_iam_role_policy" "lambda_infra_role_policy" {
           "route53:ListResourceRecordSets"
         ]
         Effect   = "Allow"
-        Resource = "arn:aws:route53:::hostedzone:${var.hosted_zone_name}"
+        Resource = "arn:aws:route53:::hostedzone:${var.hosted_zone_id}"
       },
     ]
   })
