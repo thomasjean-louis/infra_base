@@ -4,7 +4,7 @@ variable "app_name" {
 }
 
 variable "deployment_branch" {
-  type = string  
+  type = string
 }
 
 variable "token_github" {
@@ -82,7 +82,7 @@ resource "aws_lambda_function" "lambda_create_infra" {
 
   environment {
     variables = {
-      TOKEN_GITHUB             = var.token_github
+      TOKEN_GITHUB      = var.token_github
       DEPLOYMENT_BRANCH = var.deployment_branch
     }
   }
@@ -106,9 +106,9 @@ resource "aws_lambda_function" "lambda_delete_infra" {
 
   environment {
     variables = {
-      TOKEN_GITHUB             = var.token_github
+      TOKEN_GITHUB      = var.token_github
       DEPLOYMENT_BRANCH = var.deployment_branch
-      HOSTED_ZONE_ID = var.hosted_zone_id
+      HOSTED_ZONE_ID    = var.hosted_zone_id
     }
   }
 }
@@ -117,7 +117,7 @@ resource "aws_lambda_function" "lambda_delete_infra" {
 
 # Delete stack
 resource "aws_cloudwatch_event_rule" "delete_infra_rule" {
-  name        = "delete_infra_rule"
+  name = "delete_infra_rule"
 
   schedule_expression = "cron(0 16 ? * MON-FRI *)"
 }
@@ -138,26 +138,26 @@ resource "aws_lambda_permission" "allow_eventbridge_delete" {
 }
 
 
-# Create stack
+# # Create stack
 
-resource "aws_cloudwatch_event_rule" "create_infra_rule" {
-  name        = "create_infra_rule"
+# resource "aws_cloudwatch_event_rule" "create_infra_rule" {
+#   name        = "create_infra_rule"
 
-  schedule_expression = "cron(55 6 ? * MON-FRI *)"
-}
+#   schedule_expression = "cron(55 6 ? * MON-FRI *)"
+# }
 
 
-resource "aws_cloudwatch_event_target" "create_infra_lambda_target" {
-  rule      = aws_cloudwatch_event_rule.create_infra_rule.name
-  target_id = "SendToLambda"
-  arn       = aws_lambda_function.lambda_create_infra.arn
-}
+# resource "aws_cloudwatch_event_target" "create_infra_lambda_target" {
+#   rule      = aws_cloudwatch_event_rule.create_infra_rule.name
+#   target_id = "SendToLambda"
+#   arn       = aws_lambda_function.lambda_create_infra.arn
+# }
 
-resource "aws_lambda_permission" "allow_eventbridge_create" {
-  statement_id  = "AllowExecutionFromEventBridge"
-  action        = "lambda:InvokeFunction"
-  function_name = aws_lambda_function.lambda_create_infra.function_name
-  principal     = "events.amazonaws.com"
-  source_arn    = aws_cloudwatch_event_rule.create_infra_rule.arn
-}
+# resource "aws_lambda_permission" "allow_eventbridge_create" {
+#   statement_id  = "AllowExecutionFromEventBridge"
+#   action        = "lambda:InvokeFunction"
+#   function_name = aws_lambda_function.lambda_create_infra.function_name
+#   principal     = "events.amazonaws.com"
+#   source_arn    = aws_cloudwatch_event_rule.create_infra_rule.arn
+# }
 
