@@ -35,8 +35,14 @@ variable "proxy_name_image" {
 
 variable "token_github" {
   type      = string
-  sensitive = true  
+  sensitive = true
 }
 
+# Website
+
+variable "website_name" {
+  type      = string
+  sensitive = true
+}
 
 

@@ -16,7 +16,7 @@ data "aws_route53_zone" "project_route_zone" {
 }
 
 locals {
-  account_id = data.aws_caller_identity.account_data.account_id
+  account_id     = data.aws_caller_identity.account_data.account_id
   hosted_zone_id = data.aws_route53_zone.project_route_zone.zone_id
 }
 
@@ -42,12 +42,19 @@ module "r53" {
 }
 
 module "lambda" {
-  source = "./lambda"  
-  app_name = var.app_name
+  source            = "./lambda"
+  app_name          = var.app_name
   deployment_branch = var.deployment_branch
-  token_github = var.token_github
-  hosted_zone_id = local.hosted_zone_id
-  hosted_zone_name = var.hosted_zone_name
+  token_github      = var.token_github
+  hosted_zone_id    = local.hosted_zone_id
+  hosted_zone_name  = var.hosted_zone_name
+}
+
+module "website" {
+  source            = "./website"
+  region            = var.region
+  website_name      = var.website_name
+  deployment_branch = var.deployment_branch
 }
 
 
