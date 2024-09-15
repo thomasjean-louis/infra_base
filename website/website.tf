@@ -151,6 +151,11 @@ data "aws_iam_policy_document" "upload_s3_policy" {
     actions   = ["s3:ListBucket"]
     resources = ["arn:aws:s3:::${aws_s3_bucket.website-bucket.bucket}"]
   }
+  statement {
+    effect    = "Allow"
+    actions   = ["s3:PutObject "]
+    resources = ["arn:aws:s3:::${aws_s3_bucket.website-bucket.bucket}/*"]
+  }
 }
 
 resource "aws_iam_user_policy" "s3_policy_association" {
