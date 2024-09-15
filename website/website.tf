@@ -154,7 +154,7 @@ resource "aws_s3_bucket_policy" "bucket-policy" {
         Sid       = "AllowCloudFrontServicePrincipal"
         Effect    = "Allow"
         Principal = { "Service" : "cloudfront.amazonaws.com" }
-        Action    = "s3:GetObject"
+        Action    = ["s3:GetObject", "s3:GetObjectVersion"]
         Resource  = "${aws_s3_bucket.website-bucket.arn}/*"
         Condition = {
           "StringEquals" : {
