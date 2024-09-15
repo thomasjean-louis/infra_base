@@ -155,7 +155,7 @@ resource "aws_s3_bucket_policy" "bucket-policy" {
         Effect    = "Allow"
         Principal = { "Service" : "cloudfront.amazonaws.com" }
         Action    = "s3:GetObject"
-        Resource  = "${aws_s3_bucket.website-bucket.arn}/**"
+        Resource  = "${aws_s3_bucket.website-bucket.arn}/*"
         Condition = {
           "StringEquals" : {
             "AWS:SourceArn" : "${aws_cloudfront_distribution.distribution.arn}"
