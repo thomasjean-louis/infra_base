@@ -153,7 +153,7 @@ data "aws_iam_policy_document" "upload_s3_policy" {
   }
   statement {
     effect    = "Allow"
-    actions   = ["s3:PutObject "]
+    actions   = ["s3:PutObject"]
     resources = ["arn:aws:s3:::${aws_s3_bucket.website-bucket.bucket}/*"]
   }
 }
