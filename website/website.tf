@@ -137,12 +137,26 @@ resource "aws_s3_bucket_policy" "bucket-policy" {
 }
 
 # Create IAM user to upload content into the bucket
-resource "aws_iam_user" "upload_website_user" {
+resource "aws_iam_user" "upload_website_files_user" {
   name = "upload_website_files_user_${var.deployment_branch}"
 
   tags = {
     name = "upload_website_files_user_${var.deployment_branch}"
   }
+}
+
+data "aws_iam_policy_document" "upload_s3_policy" {
+  statement {
+    effect    = "Allow"
+    actions   = ["s3:ListBucket"]
+    resources = ["arn:aws:s3:::${aws_s3_bucket.website-bucket.bucket}"]
+  }
+}
+
+resource "aws_iam_user_policy" "s3_policy_association" {
+  name   = "upload_s3_policy_${var.deployment_branch}"
+  user   = aws_iam_user.upload_website_files_user.name
+  policy = data.aws_iam_policy_document.upload_s3_policy.json
 }
 
 
