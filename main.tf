@@ -55,6 +55,8 @@ module "website" {
   region            = var.region
   website_name      = var.website_name
   deployment_branch = var.deployment_branch
+  hosted_zone_id    = local.hosted_zone_id
+  hosted_zone_name  = var.hosted_zone_name
 }
 
 
