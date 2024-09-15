@@ -37,23 +37,6 @@ resource "aws_s3_bucket_website_configuration" "configuration" {
   }
 }
 
-resource "aws_s3_bucket_policy" "this" {
-  bucket = aws_s3_bucket.website-bucket.id
-
-  policy = jsonencode({
-    Version = "2012-10-17"
-    Id      = "AllowGetObjects"
-    Statement = [
-      {
-        Sid       = "AllowPublic"
-        Effect    = "Allow"
-        Principal = "*"
-        Action    = "s3:GetObject"
-        Resource  = "${aws_s3_bucket.website-bucket.arn}/**"
-      }
-    ]
-  })
-}
 
 # Cloudfront distribution
 
@@ -78,7 +61,6 @@ resource "aws_cloudfront_distribution" "distribution" {
   }
 
   default_cache_behavior {
-
     target_origin_id = local.s3_origin_id
     allowed_methods  = ["GET", "HEAD"]
     cached_methods   = ["GET", "HEAD"]
@@ -109,4 +91,26 @@ resource "aws_cloudfront_distribution" "distribution" {
 
   price_class = "PriceClass_100"
 
+}
+
+resource "aws_s3_bucket_policy" "bucket-policy" {
+  depends_on = [aws_cloudfront_distribution.distribution, aws_s3_bucket.website-bucket]
+  bucket     = aws_s3_bucket.website-bucket.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Id      = "AllowCloudFrontServicePrincipal"
+    Statement = [
+      {
+        Sid       = "AllowCloudFrontServicePrincipal"
+        Effect    = "Allow"
+        Principal = { "Service" : "cloudfront.amazonaws.com" }
+        Action    = "s3:GetObject"
+        Resource  = "${aws_s3_bucket.website-bucket.arn}/**"
+        Condition = {
+          "StringEquals" : {
+            "AWS:SourceArn" : "${aws_cloudfront_distribution.distribution.aws_cloudfront_distribution}"
+      } } }
+    ]
+  })
 }
