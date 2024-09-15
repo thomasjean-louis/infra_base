@@ -136,4 +136,13 @@ resource "aws_s3_bucket_policy" "bucket-policy" {
   })
 }
 
+# Create IAM user to upload content into the bucket
+resource "aws_iam_user" "upload_website_user" {
+  name = "upload_website_files_user_${var.deployment_branch}"
+
+  tags = {
+    name = "upload_website_files_user_${var.deployment_branch}"
+  }
+}
+
 
