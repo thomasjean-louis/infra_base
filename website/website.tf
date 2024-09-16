@@ -93,13 +93,13 @@ resource "aws_route53_record" "dns_record" {
   zone_id         = var.hosted_zone_id
 }
 
-resource "aws_acm_certificate_validation" "api_domaine_name_certificate_validation" {
+resource "aws_acm_certificate_validation" "certificate_validation" {
   certificate_arn         = aws_acm_certificate.website_certificate.arn
   validation_record_fqdns = [for record in aws_route53_record.dns_record : record.fqdn]
 }
 
 resource "aws_cloudfront_distribution" "distribution" {
-  depends_on = [aws_acm_certificate.website_certificate]
+  depends_on = [aws_acm_certificate_validation.certificate_validation]
 
   enabled             = true
   default_root_object = "index.html"
