@@ -70,51 +70,6 @@ resource "aws_cloudfront_origin_access_control" "cf-s3-oac" {
   signing_protocol                  = "sigv4"
 }
 
-resource "aws_cloudfront_distribution" "distribution" {
-
-  enabled             = true
-  default_root_object = "index.html"
-
-  origin {
-    origin_id                = local.s3_origin_id
-    domain_name              = aws_s3_bucket.website-bucket.bucket_regional_domain_name
-    origin_access_control_id = aws_cloudfront_origin_access_control.cf-s3-oac.id
-
-  }
-
-  aliases = [var.hosted_zone_name]
-
-  default_cache_behavior {
-    allowed_methods  = ["GET", "HEAD"]
-    cached_methods   = ["GET", "HEAD"]
-    target_origin_id = local.s3_origin_id
-    forwarded_values {
-      query_string = false
-
-      cookies {
-        forward = "none"
-      }
-    }
-    viewer_protocol_policy = "allow-all"
-    min_ttl                = 0
-    default_ttl            = 3600
-    max_ttl                = 86400
-  }
-
-  restrictions {
-    geo_restriction {
-      restriction_type = "none"
-    }
-  }
-
-  viewer_certificate {
-    cloudfront_default_certificate = true
-  }
-
-  price_class = "PriceClass_All"
-
-}
-
 # ACM certificate
 resource "aws_acm_certificate" "website_certificate" {
   domain_name       = var.hosted_zone_name
@@ -142,6 +97,59 @@ resource "aws_acm_certificate_validation" "api_domaine_name_certificate_validati
   certificate_arn         = aws_acm_certificate.website_certificate.arn
   validation_record_fqdns = [for record in aws_route53_record.dns_record : record.fqdn]
 }
+
+resource "aws_cloudfront_distribution" "distribution" {
+  depends_on = [aws_acm_certificate.website_certificate]
+
+  enabled             = true
+  default_root_object = "index.html"
+
+  origin {
+    origin_id                = local.s3_origin_id
+    domain_name              = aws_s3_bucket.website-bucket.bucket_regional_domain_name
+    origin_access_control_id = aws_cloudfront_origin_access_control.cf-s3-oac.id
+
+  }
+
+
+  aliases = [var.hosted_zone_name]
+
+  viewer_certificate {
+    acm_certificate_arn = aws_acm_certificate.website_certificate.arn
+    ssl_support_method  = "sni-only"
+  }
+
+
+  default_cache_behavior {
+    allowed_methods  = ["GET", "HEAD"]
+    cached_methods   = ["GET", "HEAD"]
+    target_origin_id = local.s3_origin_id
+    forwarded_values {
+      query_string = false
+
+      cookies {
+        forward = "none"
+      }
+    }
+    viewer_protocol_policy = "allow-all"
+    min_ttl                = 0
+    default_ttl            = 3600
+    max_ttl                = 86400
+  }
+
+  restrictions {
+    geo_restriction {
+      restriction_type = "none"
+    }
+  }
+
+
+
+  price_class = "PriceClass_All"
+
+}
+
+
 
 # Cloudfront alias
 resource "aws_route53_record" "cloudfront_alias" {
