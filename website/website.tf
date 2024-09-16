@@ -33,6 +33,15 @@ resource "aws_s3_bucket" "website-bucket" {
   }
 }
 
+resource "aws_s3_bucket_public_access_block" "static_site_bucket_public_access" {
+  bucket = aws_s3_bucket.website-bucket.id
+
+  block_public_acls       = true
+  block_public_policy     = true
+  ignore_public_acls      = true
+  restrict_public_buckets = true
+}
+
 resource "aws_s3_bucket_website_configuration" "configuration" {
   bucket = aws_s3_bucket.website-bucket.id
 
@@ -49,42 +58,45 @@ resource "aws_s3_bucket_website_configuration" "configuration" {
 # Cloudfront distribution
 
 locals {
-  s3_origin_id   = "${aws_s3_bucket.website-bucket.bucket}-origin"
-  s3_domain_name = "${aws_s3_bucket.website-bucket.bucket}.s3-website-${var.region}.amazonaws.com"
+  s3_origin_id   = aws_s3_bucket.website-bucket.bucket
+  s3_domain_name = "${aws_s3_bucket.website-bucket.bucket}.s3-website.${var.region}.amazonaws.com"
+}
+
+resource "aws_cloudfront_origin_access_control" "cf-s3-oac" {
+  name                              = "CloudFront S3 OAC"
+  description                       = "CloudFront S3 OAC"
+  origin_access_control_origin_type = "s3"
+  signing_behavior                  = "always"
+  signing_protocol                  = "sigv4"
 }
 
 resource "aws_cloudfront_distribution" "distribution" {
 
-  enabled = true
+  enabled             = true
+  default_root_object = "index.html"
 
   origin {
-    origin_id   = local.s3_origin_id
-    domain_name = local.s3_domain_name
-    custom_origin_config {
-      http_port              = 80
-      https_port             = 443
-      origin_protocol_policy = "http-only"
-      origin_ssl_protocols   = ["TLSv1"]
-    }
+    origin_id                = local.s3_origin_id
+    domain_name              = aws_s3_bucket.website-bucket.bucket_regional_domain_name
+    origin_access_control_id = aws_cloudfront_origin_access_control.cf-s3-oac.id
+
   }
 
   default_cache_behavior {
-    target_origin_id = local.s3_origin_id
     allowed_methods  = ["GET", "HEAD"]
     cached_methods   = ["GET", "HEAD"]
-
+    target_origin_id = local.s3_origin_id
     forwarded_values {
-      query_string = true
+      query_string = false
 
       cookies {
-        forward = "all"
+        forward = "none"
       }
     }
-
-    viewer_protocol_policy = "redirect-to-https"
+    viewer_protocol_policy = "allow-all"
     min_ttl                = 0
-    default_ttl            = 0
-    max_ttl                = 0
+    default_ttl            = 3600
+    max_ttl                = 86400
   }
 
   restrictions {
@@ -97,7 +109,7 @@ resource "aws_cloudfront_distribution" "distribution" {
     cloudfront_default_certificate = true
   }
 
-  price_class = "PriceClass_200"
+  price_class = "PriceClass_All"
 
 }
 
