@@ -82,6 +82,8 @@ resource "aws_cloudfront_distribution" "distribution" {
 
   }
 
+  aliases = [var.hosted_zone_name]
+
   default_cache_behavior {
     allowed_methods  = ["GET", "HEAD"]
     cached_methods   = ["GET", "HEAD"]
