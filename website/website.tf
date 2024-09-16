@@ -18,6 +18,11 @@ variable "hosted_zone_name" {
   type = string
 }
 
+provider "aws" {
+  region = "us-east-1"
+  alias  = "us-east-1"
+}
+
 resource "random_string" "random_string" {
   length  = 10
   special = false
