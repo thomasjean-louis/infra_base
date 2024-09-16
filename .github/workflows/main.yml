@@ -16,6 +16,7 @@ jobs:
       TF_VAR_hosted_zone_name: ${{secrets.HOSTED_ZONE_NAME}}
       TF_VAR_token_github: ${{secrets.TOKEN_GITHUB}}
       TF_VAR_app_name: ${{secrets.APP_NAME}}
+      TF_VAR_website_name: ${{secrets.WEBSITE_NAME}}
 
     steps:
       - run: 'echo "ENV: ${{ github.ref_name }}"'
