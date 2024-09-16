@@ -62,8 +62,9 @@ resource "aws_s3_bucket_website_configuration" "configuration" {
 
 # WAF
 resource "aws_wafv2_web_acl" "waf_web_acl" {
-  name  = "${var.website_name}_waf"
-  scope = "CLOUDFRONT"
+  name     = "${var.website_name}_waf"
+  scope    = "CLOUDFRONT"
+  provider = "aws.us-east-1"
 
   default_action {
     allow {}
