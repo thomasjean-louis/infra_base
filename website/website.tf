@@ -73,6 +73,7 @@ resource "aws_cloudfront_origin_access_control" "cf-s3-oac" {
 # ACM certificate
 resource "aws_acm_certificate" "website_certificate" {
   domain_name       = var.hosted_zone_name
+  provider          = "aws.us-east-1"
   validation_method = "DNS"
 }
 
@@ -94,6 +95,7 @@ resource "aws_route53_record" "dns_record" {
 }
 
 resource "aws_acm_certificate_validation" "certificate_validation" {
+  provider                = "aws.us-east-1"
   certificate_arn         = aws_acm_certificate.website_certificate.arn
   validation_record_fqdns = [for record in aws_route53_record.dns_record : record.fqdn]
 }
