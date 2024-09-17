@@ -18,6 +18,10 @@ variable "hosted_zone_name" {
   type = string
 }
 
+variable "waf_allowed_ip" {
+  type = string
+}
+
 provider "aws" {
   region = "us-east-1"
   alias  = "us-east-1"
@@ -61,6 +65,15 @@ resource "aws_s3_bucket_website_configuration" "configuration" {
 }
 
 # WAF
+resource "aws_wafv2_ip_set" "allowed_ips" {
+  provider           = aws.virginia
+  name               = "allowed-ips"
+  description        = "Authorized IP addresses"
+  scope              = "CLOUDFRONT"
+  ip_address_version = "IPV4"
+  addresses          = [var.waf_allowed_ip]
+}
+
 resource "aws_wafv2_web_acl" "waf_web_acl" {
   name     = "${var.website_name}_waf"
   scope    = "CLOUDFRONT"
@@ -78,6 +91,36 @@ resource "aws_wafv2_web_acl" "waf_web_acl" {
     cloudwatch_metrics_enabled = true
     metric_name                = "${var.website_name}_waf"
     sampled_requests_enabled   = true
+  }
+
+  // Block IPs not in whitelist
+  dynamic "rules" {
+    for_each = var.deployment_branch == "dev" ? [1] : []
+    content {
+      name     = "whitelist_ip"
+      priority = 20
+      override_action {
+        none {}
+      }
+      action {
+        block {}
+      }
+      statement {
+        not_statement {
+          statement {
+            ip_set_reference_statement {
+              arn = aws_wafv2_ip_set.allowed_ips.arn
+            }
+          }
+        }
+      }
+
+      visibility_config {
+        cloudwatch_metrics_enabled = true
+        metric_name                = "AWSManagedRulesCommonRuleSetMetric"
+        sampled_requests_enabled   = true
+      }
+    }
   }
 
   rule {
