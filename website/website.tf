@@ -94,7 +94,7 @@ resource "aws_wafv2_web_acl" "waf_web_acl" {
   }
 
   // Block IPs not in whitelist
-  dynamic "rules" {
+  dynamic "rule" {
     for_each = var.deployment_branch == "dev" ? [1] : []
     content {
       name     = "whitelist_ip"
@@ -231,7 +231,7 @@ resource "aws_cloudfront_origin_access_control" "cf-s3-oac" {
 # ACM certificate
 resource "aws_acm_certificate" "website_certificate" {
   domain_name       = var.hosted_zone_name
-  provider          = "aws.us-east-1"
+  provider          = aws.us-east-1
   validation_method = "DNS"
 }
 
