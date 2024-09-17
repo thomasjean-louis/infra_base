@@ -57,6 +57,7 @@ module "website" {
   deployment_branch = var.deployment_branch
   hosted_zone_id    = local.hosted_zone_id
   hosted_zone_name  = var.hosted_zone_name
+  waf_allowed_ip    = var.waf_allowed_ip
 }
 
 
