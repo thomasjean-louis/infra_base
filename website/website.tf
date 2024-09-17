@@ -66,7 +66,7 @@ resource "aws_s3_bucket_website_configuration" "configuration" {
 
 # WAF
 resource "aws_wafv2_ip_set" "allowed_ips" {
-  provider           = aws.virginia
+  provider           = aws.us-east-1
   name               = "allowed-ips"
   description        = "Authorized IP addresses"
   scope              = "CLOUDFRONT"
@@ -77,7 +77,7 @@ resource "aws_wafv2_ip_set" "allowed_ips" {
 resource "aws_wafv2_web_acl" "waf_web_acl" {
   name     = "${var.website_name}_waf"
   scope    = "CLOUDFRONT"
-  provider = "aws.us-east-1"
+  provider = aws.us-east-1
 
   default_action {
     allow {}
