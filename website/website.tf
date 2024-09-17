@@ -99,12 +99,7 @@ resource "aws_wafv2_web_acl" "waf_web_acl" {
     content {
       name     = "whitelist_ip"
       priority = 100
-      override_action {
-        none {}
-      }
-      action {
-        block {}
-      }
+
       statement {
         not_statement {
           statement {
@@ -114,6 +109,11 @@ resource "aws_wafv2_web_acl" "waf_web_acl" {
           }
         }
       }
+
+      action {
+        block {}
+      }
+
 
       visibility_config {
         cloudwatch_metrics_enabled = true
