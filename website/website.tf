@@ -98,7 +98,7 @@ resource "aws_wafv2_web_acl" "waf_web_acl" {
     for_each = var.deployment_branch == "dev" ? [1] : []
     content {
       name     = "whitelist_ip"
-      priority = 20
+      priority = 100
       override_action {
         none {}
       }
