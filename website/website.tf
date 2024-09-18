@@ -66,6 +66,7 @@ resource "aws_s3_bucket_website_configuration" "configuration" {
 
 # WAF
 resource "aws_wafv2_ip_set" "allowed_ips" {
+
   provider           = aws.us-east-1
   name               = "allowed-ips"
   description        = "Authorized IP addresses"
@@ -360,7 +361,7 @@ data "aws_iam_policy_document" "upload_s3_policy" {
   }
   statement {
     effect    = "Allow"
-    actions   = ["s3:PutObject"]
+    actions   = ["s3:PutObject", "s3:DeleteObject"]
     resources = ["arn:aws:s3:::${aws_s3_bucket.website-bucket.bucket}/*"]
   }
 }
