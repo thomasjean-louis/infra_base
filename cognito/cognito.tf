@@ -1,3 +1,7 @@
+variable "region" {
+  type = string
+}
+
 variable "app_name" {
   type = string
 }
@@ -44,6 +48,15 @@ variable "admin_group_name" {
 
 variable "user_group_name" {
   type = string
+}
+
+#Cognito Access logs bucket
+resource "aws_s3_bucket" "cognito-log-bucket" {
+  bucket = "s3-${var.region}-Cognito-${random_string.random_string.result}-${var.deployment_branch}"
+
+  tags = {
+    Name = "s3-${var.region}-Cognito-${random_string.random_string.result}-${var.deployment_branch}"
+  }
 }
 
 
