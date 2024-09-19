@@ -50,6 +50,10 @@ variable "user_group_name" {
 resource "aws_cognito_user_pool" "user_pool" {
   name = "${var.app_name}-user-pool-${var.deployment_branch}"
 
+  user_pool_add_ons {
+    advanced_security_mode = "AUDIT"
+  }
+
   password_policy {
     minimum_length                   = 6
     require_lowercase                = false
