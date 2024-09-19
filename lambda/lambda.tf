@@ -1,3 +1,10 @@
+variable "region" {
+  type = string
+}
+
+variable "account_id" {
+  type = string
+}
 
 variable "app_name" {
   type = string
@@ -57,6 +64,13 @@ resource "aws_iam_role_policy" "lambda_infra_role_policy" {
         Effect   = "Allow"
         Resource = "arn:aws:route53:::hostedzone/${var.hosted_zone_id}"
       },
+      {
+        Action = [
+          "cloudformation:ListStacks",
+        ]
+        Effect   = "Allow"
+        Resource = "arn:aws:cloudformation:${var.region}:${var.account_id}:stack/*/*"
+      }
     ]
   })
 }
