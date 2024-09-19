@@ -71,6 +71,27 @@ resource "aws_iam_role_policy" "lambda_infra_role_policy" {
         ]
         Effect   = "Allow"
         Resource = "arn:aws:cloudformation:${var.region}:${var.account_id}:stack/*/*"
+      },
+      {
+        Action = [
+          "wafv2:GetWebACLForResource",
+        ]
+        Effect   = "Allow"
+        Resource = "arn:aws:wafv2:${var.region}:${var.account_id}:regional/webacl/*/*"
+      },
+      {
+        Action = [
+          "route53:GetHostedZone",
+        ]
+        Effect   = "Allow"
+        Resource = "arn:aws:route53:::hostedzone/*"
+      },
+      {
+        Action = [
+          "lambda:InvokeFunction",
+        ]
+        Effect   = "Allow"
+        Resource = "arn:aws:lambda:${var.region}:${var.account_id}:function:*"
       }
     ]
   })
