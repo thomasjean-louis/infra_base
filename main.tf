@@ -63,6 +63,7 @@ module "website" {
 # Cognito
 module "cognito" {
   source                   = "./cognito"
+  region                   = var.region
   app_name                 = var.app_name
   admin_cognito_username   = var.admin_cognito_username
   admin_cognito_password   = var.admin_cognito_password

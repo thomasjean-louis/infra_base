@@ -1,3 +1,7 @@
+variable "region" {
+  type = string
+}
+
 variable "app_name" {
   type = string
 }
@@ -46,9 +50,23 @@ variable "user_group_name" {
   type = string
 }
 
+#Cognito log groups
+resource "aws_cloudwatch_log_group" "log_group" {
+  name = "cognito"
+}
+
+resource "aws_cloudwatch_log_stream" "log_stream" {
+  name           = "cognito"
+  log_group_name = aws_cloudwatch_log_group.log_group.name
+}
+
 
 resource "aws_cognito_user_pool" "user_pool" {
   name = "${var.app_name}-user-pool-${var.deployment_branch}"
+
+  user_pool_add_ons {
+    advanced_security_mode = "AUDIT"
+  }
 
   password_policy {
     minimum_length                   = 6
