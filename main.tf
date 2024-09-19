@@ -60,6 +60,25 @@ module "website" {
   waf_allowed_ip    = var.waf_allowed_ip
 }
 
+# Cognito
+module "cognito" {
+  source                   = "./cognito"
+  app_name                 = var.app_name
+  admin_cognito_username   = var.admin_cognito_username
+  admin_cognito_password   = var.admin_cognito_password
+  classic_cognito_username = var.classic_cognito_username
+  classic_cognito_password = var.classic_cognito_password
+
+  hosted_zone_id       = local.hosted_zone_id
+  subdomain_auth       = var.subdomain_auth
+  hosted_zone_name     = var.hosted_zone_name
+  default_cognito_mail = var.default_cognito_mail
+  deployment_branch    = var.deployment_branch
+  admin_group_name     = var.admin_group_name
+  user_group_name      = var.user_group_name
+}
+
+
 
 
 

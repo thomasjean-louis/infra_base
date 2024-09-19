@@ -19,6 +19,13 @@ jobs:
       TF_VAR_website_name: ${{secrets.WEBSITE_NAME}}
       TF_VAR_waf_allowed_ip: ${{secrets.WAF_ALLOWED_IP}}
 
+      TF_VAR_subdomain_auth: ${{secrets.SUBDOMAIN_AUTH}}
+      TF_VAR_admin_cognito_username: ${{secrets.ADMIN_COGNITO_USERNAME}}
+      TF_VAR_admin_cognito_password: ${{secrets.ADMIN_COGNITO_PASSWORD}}
+      TF_VAR_classic_cognito_username: ${{secrets.CLASSIC_COGNITO_USERNAME}}
+      TF_VAR_classic_cognito_password: ${{secrets.CLASSIC_COGNITO_PASSWORD}}
+      TF_VAR_default_cognito_mail: ${{secrets.DEFAULT_COGNITO_MAIL}}
+
     steps:
       - run: 'echo "ENV: ${{ github.ref_name }}"'
       - name: Checkout code

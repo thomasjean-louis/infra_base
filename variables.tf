@@ -52,4 +52,43 @@ variable "waf_allowed_ip" {
   sensitive = true
 }
 
+###### Cognito
+variable "subdomain_auth" {
+  type      = string
+  sensitive = true
+}
+
+variable "admin_cognito_username" {
+  type      = string
+  sensitive = true
+}
+
+variable "admin_cognito_password" {
+  type      = string
+  sensitive = true
+}
+
+variable "classic_cognito_username" {
+  type      = string
+  sensitive = true
+}
+
+variable "classic_cognito_password" {
+  type      = string
+  sensitive = true
+}
+
+variable "default_cognito_mail" {
+  type      = string
+  sensitive = true
+}
+
+variable "admin_group_name" {
+  default = "admin"
+}
+
+variable "user_group_name" {
+  default = "user"
+}
+
 
