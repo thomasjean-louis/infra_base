@@ -6,6 +6,27 @@ import boto3
 
 def lambda_handler(event, context):
   
+  # Delete Cloudformation stacks
+  cf_stacks = boto3.client('cloudformation')
+  stacks = cf_stacks.list_stacks(StackStatusFilter=['CREATE_COMPLETE', 'UPDATE_COMPLETE'])
+  for stack in stacks['StackSummaries']:
+    stack_name = stack['StackName']
+    print(f"Deleting stack: {stack_name}")
+    cf_stacks.delete_stack(StackName=stack_name)
+
+    # Wait for the stack to be deleted
+    while True:
+        try:
+            status = cf_stacks.describe_stacks(StackName=stack_name)['Stacks'][0]['StackStatus']
+        except:
+            print(f"Stack {stack_name} has been deleted")
+            break
+        if status == 'DELETE_COMPLETE':
+            print(f"Stack {stack_name} has been deleted")
+            break
+        time.sleep(5)
+
+
   # Remove acm-validation Records
   client53 = boto3.client('route53')
   response53 = client53.list_resource_record_sets(
