@@ -67,6 +67,7 @@ resource "aws_iam_role_policy" "lambda_infra_role_policy" {
       {
         Action = [
           "cloudformation:ListStacks",
+          "cloudformation:DeleteStack"
         ]
         Effect   = "Allow"
         Resource = "arn:aws:cloudformation:${var.region}:${var.account_id}:stack/*/*"
