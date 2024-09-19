@@ -57,13 +57,14 @@ resource "random_string" "random_string" {
   upper   = false
 }
 
-#Cognito Access logs bucket
-resource "aws_s3_bucket" "cognito-log-bucket" {
-  bucket = "s3-${var.region}-cognito-${random_string.random_string.result}-${var.deployment_branch}"
+#Cognito log groups
+resource "aws_cloudwatch_log_group" "log_group" {
+  name = "cognito"
+}
 
-  tags = {
-    Name = "s3-${var.region}-cognito-${random_string.random_string.result}-${var.deployment_branch}"
-  }
+resource "aws_cloudwatch_log_stream" "log_stream" {
+  name           = var.app_name
+  log_group_name = aws_cloudwatch_log_group.log_group.name
 }
 
 
