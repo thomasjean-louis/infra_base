@@ -50,13 +50,6 @@ variable "user_group_name" {
   type = string
 }
 
-resource "random_string" "random_string" {
-  length  = 10
-  special = false
-  numeric = false
-  upper   = false
-}
-
 #Cognito log groups
 resource "aws_cloudwatch_log_group" "log_group" {
   name = "cognito"
