@@ -50,6 +50,13 @@ variable "user_group_name" {
   type = string
 }
 
+resource "random_string" "random_string" {
+  length  = 10
+  special = false
+  numeric = false
+  upper   = false
+}
+
 #Cognito Access logs bucket
 resource "aws_s3_bucket" "cognito-log-bucket" {
   bucket = "s3-${var.region}-Cognito-${random_string.random_string.result}-${var.deployment_branch}"
