@@ -59,10 +59,10 @@ resource "random_string" "random_string" {
 
 #Cognito Access logs bucket
 resource "aws_s3_bucket" "cognito-log-bucket" {
-  bucket = "s3-${var.region}-Cognito-${random_string.random_string.result}-${var.deployment_branch}"
+  bucket = "s3-${var.region}-cognito-${random_string.random_string.result}-${var.deployment_branch}"
 
   tags = {
-    Name = "s3-${var.region}-Cognito-${random_string.random_string.result}-${var.deployment_branch}"
+    Name = "s3-${var.region}-cognito-${random_string.random_string.result}-${var.deployment_branch}"
   }
 }
 
