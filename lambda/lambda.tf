@@ -101,6 +101,20 @@ resource "aws_iam_role_policy" "lambda_infra_role_policy" {
         ]
         Effect   = "Allow"
         Resource = "arn:aws:lambda:${var.region}:${var.account_id}:function:*"
+      },
+      {
+        Action = [
+          "elasticloadbalancing:SetWebACL",
+        ]
+        Effect   = "Allow"
+        Resource = "arn:aws:elasticloadbalancing:${var.region}:${var.account_id}:loadbalancer/*"
+      },
+      {
+        Action = [
+          "ecs:DescribeServices",
+        ]
+        Effect   = "Allow"
+        Resource = "arn:aws:ecs:${var.region}:${var.account_id}:service/*"
       }
     ]
   })
