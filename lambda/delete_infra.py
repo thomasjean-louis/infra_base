@@ -15,15 +15,16 @@ def lambda_handler(event, context):
     cf_stacks.delete_stack(StackName=stack_name)
 
     # Wait for the stack to be deleted
-    while True:
-        try:
-            status = cf_stacks.describe_stacks(StackName=stack_name)['Stacks'][0]['StackStatus']
-        except:
+    while True:       
+        status = cf_stacks.describe_stacks(StackName=stack_name)['Stacks'][0]['StackStatus']
+        if status == 'DELETE_FAILED':
             print(f"Error when deleting stack {stack_name}")
             break
-        if status == 'DELETE_COMPLETE':
+        elif status == 'DELETE_COMPLETE':
             print(f"Stack {stack_name} has been deleted")
             break
+        else:
+            print(f"Stack {stack_name} status {status}")            
         time.sleep(5)
 
 
