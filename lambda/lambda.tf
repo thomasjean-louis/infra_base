@@ -105,6 +105,7 @@ resource "aws_iam_role_policy" "lambda_infra_role_policy" {
       {
         Action = [
           "elasticloadbalancing:SetWebACL",
+          "elasticloadbalancing:DeleteLoadBalancer",
         ]
         Effect   = "Allow"
         Resource = "arn:aws:elasticloadbalancing:${var.region}:${var.account_id}:loadbalancer/*"
@@ -123,14 +124,27 @@ resource "aws_iam_role_policy" "lambda_infra_role_policy" {
         ]
         Effect   = "Allow"
         Resource = "arn:aws:ecs:${var.region}:${var.account_id}:service/*"
-      }
-      ,
+      },
       {
         Action = [
           "elasticloadbalancing:DescribeListeners"
         ]
         Effect   = "Allow"
         Resource = "*"
+      },
+      {
+        Action = [
+          "elasticloadbalancing:DeleteTargetGroup"
+        ]
+        Effect   = "Allow"
+        Resource = "arn:aws:elasticloadbalancing:${var.region}:${var.account_id}:targetgroup/*"
+      },
+      {
+        Action = [
+          "acm:DeleteCertificate"
+        ]
+        Effect   = "Allow"
+        Resource = "arn:aws:acm:${var.region}:${var.account_id}:certificate/*"
       }
     ]
   })
