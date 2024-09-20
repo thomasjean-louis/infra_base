@@ -75,6 +75,7 @@ resource "aws_iam_role_policy" "lambda_infra_role_policy" {
       {
         Action = [
           "wafv2:GetWebACLForResource",
+          "wafv2:GetWebACL"
         ]
         Effect   = "Allow"
         Resource = "arn:aws:wafv2:${var.region}:${var.account_id}:regional/webacl/*/*"
@@ -88,7 +89,15 @@ resource "aws_iam_role_policy" "lambda_infra_role_policy" {
       },
       {
         Action = [
+          "route53:GetChange",
+        ]
+        Effect   = "Allow"
+        Resource = "arn:aws:route53:::change/*"
+      },
+      {
+        Action = [
           "lambda:InvokeFunction",
+          "lambda:DeleteFunction"
         ]
         Effect   = "Allow"
         Resource = "arn:aws:lambda:${var.region}:${var.account_id}:function:*"
