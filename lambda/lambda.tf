@@ -112,6 +112,7 @@ resource "aws_iam_role_policy" "lambda_infra_role_policy" {
       {
         Action = [
           "ecs:DescribeServices",
+          "ecs:DeleteService"
         ]
         Effect   = "Allow"
         Resource = "arn:aws:ecs:${var.region}:${var.account_id}:service/*"
