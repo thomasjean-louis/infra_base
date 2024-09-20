@@ -3,9 +3,36 @@ import json
 import os
 from pprint import pprint
 import boto3 
+import time
 
 def lambda_handler(event, context):
   
+  # Delete Cloudformation stacks
+  cf_stacks = boto3.client('cloudformation')
+  stacks = cf_stacks.list_stacks(StackStatusFilter=['CREATE_COMPLETE', 'UPDATE_COMPLETE', 'DELETE_FAILED'])
+  for stack in stacks['StackSummaries']:
+    stack_name = stack['StackName']
+    print(f"Deleting stack: {stack_name}")
+    cf_stacks.delete_stack(StackName=stack_name)
+
+    # Wait for the stack to be deleted
+    while True:       
+        try:
+          status = cf_stacks.describe_stacks(StackName=stack_name)['Stacks'][0]['StackStatus']
+        except:
+          print(f"Error when describing the stack {stack_name} (might be deleted).")
+          break
+        if status == 'DELETE_FAILED':
+          print(f"Error when deleting stack {stack_name}")
+          break
+        elif status == 'DELETE_COMPLETE':
+          print(f"Stack {stack_name} has been deleted")
+          break
+        else:
+          print(f"Stack {stack_name} status {status}")            
+        time.sleep(5)
+
+
   # Remove acm-validation Records
   client53 = boto3.client('route53')
   response53 = client53.list_resource_record_sets(
@@ -40,7 +67,7 @@ def lambda_handler(event, context):
         HostedZoneId = os.environ["HOSTED_ZONE_ID"],
       )
 
-  # # Destroy terraform stack
+  # Destroy terraform stack
   url = "https://api.github.com/repos/thomasjean-louis/infra/actions/workflows/deleteResources.yml/dispatches"
   
   values = {"ref": os.environ["DEPLOYMENT_BRANCH"],}

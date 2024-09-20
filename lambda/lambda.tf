@@ -1,3 +1,10 @@
+variable "region" {
+  type = string
+}
+
+variable "account_id" {
+  type = string
+}
 
 variable "app_name" {
   type = string
@@ -57,6 +64,89 @@ resource "aws_iam_role_policy" "lambda_infra_role_policy" {
         Effect   = "Allow"
         Resource = "arn:aws:route53:::hostedzone/${var.hosted_zone_id}"
       },
+      {
+        Action = [
+          "cloudformation:ListStacks",
+          "cloudformation:DeleteStack",
+          "cloudformation:DescribeStacks"
+        ]
+        Effect   = "Allow"
+        Resource = "arn:aws:cloudformation:${var.region}:${var.account_id}:stack/*/*"
+      },
+      {
+        Action = [
+          "wafv2:GetWebACLForResource",
+          "wafv2:GetWebACL"
+        ]
+        Effect   = "Allow"
+        Resource = "arn:aws:wafv2:${var.region}:${var.account_id}:regional/webacl/*/*"
+      },
+      {
+        Action = [
+          "route53:GetHostedZone",
+        ]
+        Effect   = "Allow"
+        Resource = "arn:aws:route53:::hostedzone/*"
+      },
+      {
+        Action = [
+          "route53:GetChange",
+        ]
+        Effect   = "Allow"
+        Resource = "arn:aws:route53:::change/*"
+      },
+      {
+        Action = [
+          "lambda:InvokeFunction",
+          "lambda:DeleteFunction"
+        ]
+        Effect   = "Allow"
+        Resource = "arn:aws:lambda:${var.region}:${var.account_id}:function:*"
+      },
+      {
+        Action = [
+          "elasticloadbalancing:SetWebACL",
+          "elasticloadbalancing:DeleteLoadBalancer",
+        ]
+        Effect   = "Allow"
+        Resource = "arn:aws:elasticloadbalancing:${var.region}:${var.account_id}:loadbalancer/*"
+      },
+      {
+        Action = [
+          "elasticloadbalancing:DeleteListener",
+        ]
+        Effect   = "Allow"
+        Resource = "arn:aws:elasticloadbalancing:${var.region}:${var.account_id}:listener/*"
+      },
+      {
+        Action = [
+          "ecs:DescribeServices",
+          "ecs:DeleteService"
+        ]
+        Effect   = "Allow"
+        Resource = "arn:aws:ecs:${var.region}:${var.account_id}:service/*"
+      },
+      {
+        Action = [
+          "elasticloadbalancing:DescribeListeners"
+        ]
+        Effect   = "Allow"
+        Resource = "*"
+      },
+      {
+        Action = [
+          "elasticloadbalancing:DeleteTargetGroup"
+        ]
+        Effect   = "Allow"
+        Resource = "arn:aws:elasticloadbalancing:${var.region}:${var.account_id}:targetgroup/*"
+      },
+      {
+        Action = [
+          "acm:DeleteCertificate"
+        ]
+        Effect   = "Allow"
+        Resource = "arn:aws:acm:${var.region}:${var.account_id}:certificate/*"
+      }
     ]
   })
 }
@@ -102,7 +192,7 @@ resource "aws_lambda_function" "lambda_delete_infra" {
   role             = aws_iam_role.lambda_infra_role.arn
   handler          = "delete_infra.lambda_handler"
   runtime          = "python3.9"
-  timeout          = 20
+  timeout          = 400
 
   environment {
     variables = {
