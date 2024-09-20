@@ -192,7 +192,7 @@ resource "aws_lambda_function" "lambda_delete_infra" {
   role             = aws_iam_role.lambda_infra_role.arn
   handler          = "delete_infra.lambda_handler"
   runtime          = "python3.9"
-  timeout          = 20
+  timeout          = 400
 
   environment {
     variables = {
