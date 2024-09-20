@@ -19,7 +19,7 @@ def lambda_handler(event, context):
         try:
             status = cf_stacks.describe_stacks(StackName=stack_name)['Stacks'][0]['StackStatus']
         except:
-            print(f"Stack {stack_name} has been deleted")
+            print(f"Error when deleting stack {stack_name}")
             break
         if status == 'DELETE_COMPLETE':
             print(f"Stack {stack_name} has been deleted")
