@@ -3,6 +3,7 @@ import json
 import os
 from pprint import pprint
 import boto3 
+import time
 
 def lambda_handler(event, context):
   
