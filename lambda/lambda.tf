@@ -111,6 +111,13 @@ resource "aws_iam_role_policy" "lambda_infra_role_policy" {
       },
       {
         Action = [
+          "elasticloadbalancing:DeleteListener",
+        ]
+        Effect   = "Allow"
+        Resource = "arn:aws:elasticloadbalancing:${var.region}:${var.account_id}:listener/*"
+      },
+      {
+        Action = [
           "ecs:DescribeServices",
           "ecs:DeleteService"
         ]
