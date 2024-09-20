@@ -8,7 +8,7 @@ def lambda_handler(event, context):
   
   # Delete Cloudformation stacks
   cf_stacks = boto3.client('cloudformation')
-  stacks = cf_stacks.list_stacks()
+  stacks = cf_stacks.list_stacks(StackStatusFilter=['CREATE_COMPLETE', 'UPDATE_COMPLETE', 'DELETE_FAILED'])
   for stack in stacks['StackSummaries']:
     stack_name = stack['StackName']
     print(f"Deleting stack: {stack_name}")
