@@ -233,7 +233,7 @@ resource "aws_lambda_permission" "allow_eventbridge_delete" {
 # Restrict Ip lambda Edge function
 data "archive_file" "restrict_ip_zip" {
   type        = "zip"
-  source_file = "${path.module}/restrict_ip.py"
+  source_file = "${path.module}/restrict_ip.js"
   output_path = "${path.module}/restrict_ip.zip"
 }
 
