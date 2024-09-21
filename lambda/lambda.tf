@@ -230,6 +230,11 @@ resource "aws_lambda_permission" "allow_eventbridge_delete" {
   source_arn    = aws_cloudwatch_event_rule.delete_infra_rule.arn
 }
 
+provider "aws" {
+  region = "us-east-1"
+  alias  = "us-east-1"
+}
+
 # Restrict Ip lambda Edge function
 data "archive_file" "restrict_ip_zip" {
   type        = "zip"
