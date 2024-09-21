@@ -236,28 +236,32 @@ provider "aws" {
 }
 
 # Restrict Ip lambda Edge function
-data "archive_file" "restrict_ip_zip" {
+# data "archive_file" "restrict_ip_zip" {
+#   type        = "zip"
+#   source_file = "${path.module}/restrict_ip.js"
+#   output_path = "${path.module}/restrict_ip.zip"
+# }
+
+data "archive_file" "ip-function" {
   type        = "zip"
-  source_file = "${path.module}/restrict_ip.js"
-  output_path = "${path.module}/restrict_ip.zip"
+  output_path = "./ip-function.zip"
+
+  source {
+    content  = templatefile("./restrict_ip.js", { restrict_ip = var.waf_allowed_ip })
+    filename = "restrict_ip.js"
+  }
 }
 
 resource "aws_lambda_function" "lambda_restrict_ip" {
   provider         = aws.us-east-1
   function_name    = "restrict_ip"
-  filename         = data.archive_file.restrict_ip_zip.output_path
-  source_code_hash = data.archive_file.restrict_ip_zip.output_base64sha256
+  filename         = data.archive_file.ip-function.output_path
+  source_code_hash = data.archive_file.ip-function.output_base64sha256
   role             = aws_iam_role.lambda_infra_role.arn
   handler          = "restrict_ip.lambda_handler"
   runtime          = "nodejs20.x"
   timeout          = 4
   publish          = true
-
-  environment {
-    variables = {
-      WHITELISTED_IP = var.waf_allowed_ip
-    }
-  }
 }
 
 output "restrict_ip_function_arn" {
