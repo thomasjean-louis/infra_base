@@ -257,6 +257,27 @@ resource "aws_iam_role" "restrict_ip_role" {
 POLICY
 }
 
+resource "aws_iam_role_policy" "my-role" {
+  name   = "template-variable-demo"
+  role   = aws_iam_role.restrict_ip_role.name
+  policy = <<POLICY
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+              "logs:CreateLogGroup",
+              "logs:CreateLogStream",
+              "logs:PutLogEvents"
+            ],
+            "Resource": "arn:aws:logs:*:*:*"
+        }
+    ]
+}
+POLICY
+}
+
 
 # Restrict Ip lambda Edge function
 # data "archive_file" "restrict_ip_zip" {
