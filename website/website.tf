@@ -18,9 +18,11 @@ variable "hosted_zone_name" {
   type = string
 }
 
-variable "waf_allowed_ip" {
+variable "restrict_ip_function__arn" {
   type = string
 }
+
+
 
 provider "aws" {
   region = "us-east-1"
@@ -64,154 +66,155 @@ resource "aws_s3_bucket_website_configuration" "configuration" {
   }
 }
 
-# WAF
-resource "aws_wafv2_ip_set" "allowed_ips" {
+# Use lambda#Edge insted of Waf, to save money
+# # WAF
+# resource "aws_wafv2_ip_set" "allowed_ips" {
 
-  provider           = aws.us-east-1
-  name               = "allowed-ips"
-  description        = "Authorized IP addresses"
-  scope              = "CLOUDFRONT"
-  ip_address_version = "IPV4"
-  addresses          = [var.waf_allowed_ip]
-}
+#   provider           = aws.us-east-1
+#   name               = "allowed-ips"
+#   description        = "Authorized IP addresses"
+#   scope              = "CLOUDFRONT"
+#   ip_address_version = "IPV4"
+#   addresses          = [var.waf_allowed_ip]
+# }
 
-resource "aws_wafv2_web_acl" "waf_web_acl" {
-  name     = "${var.website_name}_waf"
-  scope    = "CLOUDFRONT"
-  provider = aws.us-east-1
+# resource "aws_wafv2_web_acl" "waf_web_acl" {
+#   name     = "${var.website_name}_waf"
+#   scope    = "CLOUDFRONT"
+#   provider = aws.us-east-1
 
-  default_action {
-    allow {}
-  }
+#   default_action {
+#     allow {}
+#   }
 
-  tags = {
-    Name = "${var.website_name}_waf"
-  }
+#   tags = {
+#     Name = "${var.website_name}_waf"
+#   }
 
-  visibility_config {
-    cloudwatch_metrics_enabled = true
-    metric_name                = "${var.website_name}_waf"
-    sampled_requests_enabled   = true
-  }
+#   visibility_config {
+#     cloudwatch_metrics_enabled = true
+#     metric_name                = "${var.website_name}_waf"
+#     sampled_requests_enabled   = true
+#   }
 
-  // Block IPs not in whitelist
-  dynamic "rule" {
-    for_each = var.deployment_branch == "dev" ? [1] : []
-    content {
-      name     = "whitelist_ip"
-      priority = 100
+#   // Block IPs not in whitelist
+#   dynamic "rule" {
+#     for_each = var.deployment_branch == "dev" ? [1] : []
+#     content {
+#       name     = "whitelist_ip"
+#       priority = 100
 
-      statement {
-        not_statement {
-          statement {
-            ip_set_reference_statement {
-              arn = aws_wafv2_ip_set.allowed_ips.arn
-            }
-          }
-        }
-      }
+#       statement {
+#         not_statement {
+#           statement {
+#             ip_set_reference_statement {
+#               arn = aws_wafv2_ip_set.allowed_ips.arn
+#             }
+#           }
+#         }
+#       }
 
-      action {
-        block {}
-      }
+#       action {
+#         block {}
+#       }
 
 
-      visibility_config {
-        cloudwatch_metrics_enabled = true
-        metric_name                = "AWSManagedRulesCommonRuleSetMetric"
-        sampled_requests_enabled   = true
-      }
-    }
-  }
+#       visibility_config {
+#         cloudwatch_metrics_enabled = true
+#         metric_name                = "AWSManagedRulesCommonRuleSetMetric"
+#         sampled_requests_enabled   = true
+#       }
+#     }
+#   }
 
-  rule {
-    name     = "AWSManagedRulesCommonRuleSet"
-    priority = 10
+#   rule {
+#     name     = "AWSManagedRulesCommonRuleSet"
+#     priority = 10
 
-    statement {
-      managed_rule_group_statement {
-        name        = "AWSManagedRulesCommonRuleSet"
-        vendor_name = "AWS"
-      }
-    }
+#     statement {
+#       managed_rule_group_statement {
+#         name        = "AWSManagedRulesCommonRuleSet"
+#         vendor_name = "AWS"
+#       }
+#     }
 
-    override_action {
-      none {}
-    }
+#     override_action {
+#       none {}
+#     }
 
-    visibility_config {
-      cloudwatch_metrics_enabled = true
-      metric_name                = "AWSManagedRulesCommonRuleSetMetric"
-      sampled_requests_enabled   = true
-    }
-  }
+#     visibility_config {
+#       cloudwatch_metrics_enabled = true
+#       metric_name                = "AWSManagedRulesCommonRuleSetMetric"
+#       sampled_requests_enabled   = true
+#     }
+#   }
 
-  rule {
-    name     = "AWSManagedRulesAdminProtectionRuleSet"
-    priority = 20
+#   rule {
+#     name     = "AWSManagedRulesAdminProtectionRuleSet"
+#     priority = 20
 
-    statement {
-      managed_rule_group_statement {
-        name        = "AWSManagedRulesAdminProtectionRuleSet"
-        vendor_name = "AWS"
-      }
-    }
+#     statement {
+#       managed_rule_group_statement {
+#         name        = "AWSManagedRulesAdminProtectionRuleSet"
+#         vendor_name = "AWS"
+#       }
+#     }
 
-    override_action {
-      none {}
-    }
+#     override_action {
+#       none {}
+#     }
 
-    visibility_config {
-      cloudwatch_metrics_enabled = true
-      metric_name                = "AWSManagedRulesAdminProtectionRuleSetMetric"
-      sampled_requests_enabled   = true
-    }
-  }
+#     visibility_config {
+#       cloudwatch_metrics_enabled = true
+#       metric_name                = "AWSManagedRulesAdminProtectionRuleSetMetric"
+#       sampled_requests_enabled   = true
+#     }
+#   }
 
-  rule {
-    name     = "AWSManagedRulesKnownBadInputsRuleSet"
-    priority = 30
+#   rule {
+#     name     = "AWSManagedRulesKnownBadInputsRuleSet"
+#     priority = 30
 
-    statement {
-      managed_rule_group_statement {
-        name        = "AWSManagedRulesKnownBadInputsRuleSet"
-        vendor_name = "AWS"
-      }
-    }
+#     statement {
+#       managed_rule_group_statement {
+#         name        = "AWSManagedRulesKnownBadInputsRuleSet"
+#         vendor_name = "AWS"
+#       }
+#     }
 
-    override_action {
-      none {}
-    }
+#     override_action {
+#       none {}
+#     }
 
-    visibility_config {
-      cloudwatch_metrics_enabled = true
-      metric_name                = "AWSManagedRulesKnownBadInputsRuleSetMetric"
-      sampled_requests_enabled   = true
-    }
-  }
+#     visibility_config {
+#       cloudwatch_metrics_enabled = true
+#       metric_name                = "AWSManagedRulesKnownBadInputsRuleSetMetric"
+#       sampled_requests_enabled   = true
+#     }
+#   }
 
-  rule {
-    name     = "AWSManagedRulesAmazonIpReputationList"
-    priority = 40
+#   rule {
+#     name     = "AWSManagedRulesAmazonIpReputationList"
+#     priority = 40
 
-    statement {
-      managed_rule_group_statement {
-        name        = "AWSManagedRulesAmazonIpReputationList"
-        vendor_name = "AWS"
-      }
-    }
+#     statement {
+#       managed_rule_group_statement {
+#         name        = "AWSManagedRulesAmazonIpReputationList"
+#         vendor_name = "AWS"
+#       }
+#     }
 
-    override_action {
-      none {}
-    }
+#     override_action {
+#       none {}
+#     }
 
-    visibility_config {
-      cloudwatch_metrics_enabled = true
-      metric_name                = "AWSManagedRulesAmazonIpReputationListMetric"
-      sampled_requests_enabled   = true
-    }
-  }
-}
+#     visibility_config {
+#       cloudwatch_metrics_enabled = true
+#       metric_name                = "AWSManagedRulesAmazonIpReputationListMetric"
+#       sampled_requests_enabled   = true
+#     }
+#   }
+# }
 
 
 # Cloudfront distribution
@@ -272,7 +275,7 @@ resource "aws_cloudfront_distribution" "distribution" {
 
   }
 
-  web_acl_id = aws_wafv2_web_acl.waf_web_acl.arn
+  # web_acl_id = aws_wafv2_web_acl.waf_web_acl.arn
 
   aliases = [var.hosted_zone_name]
 
@@ -297,6 +300,17 @@ resource "aws_cloudfront_distribution" "distribution" {
     min_ttl                = 0
     default_ttl            = 3600
     max_ttl                = 86400
+
+
+    dynamic "lambda_function_association" {
+      for_each = var.deployment_branch == "dev" ? [1] : []
+      content {
+        event_type = "viewer-request"
+        lambda_arn = var.restrict_ip_function__arn
+      }
+
+    }
+
   }
 
   restrictions {
@@ -310,6 +324,7 @@ resource "aws_cloudfront_distribution" "distribution" {
   price_class = "PriceClass_All"
 
 }
+
 
 
 

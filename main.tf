@@ -50,16 +50,17 @@ module "lambda" {
   token_github      = var.token_github
   hosted_zone_id    = local.hosted_zone_id
   hosted_zone_name  = var.hosted_zone_name
+  waf_allowed_ip    = var.waf_allowed_ip
 }
 
 module "website" {
-  source            = "./website"
-  region            = var.region
-  website_name      = var.website_name
-  deployment_branch = var.deployment_branch
-  hosted_zone_id    = local.hosted_zone_id
-  hosted_zone_name  = var.hosted_zone_name
-  waf_allowed_ip    = var.waf_allowed_ip
+  source                    = "./website"
+  region                    = var.region
+  website_name              = var.website_name
+  deployment_branch         = var.deployment_branch
+  hosted_zone_id            = local.hosted_zone_id
+  hosted_zone_name          = var.hosted_zone_name
+  restrict_ip_function__arn = module.lambda.restrict_ip_function_arn
 }
 
 # Cognito
