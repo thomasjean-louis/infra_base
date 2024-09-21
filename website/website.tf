@@ -301,9 +301,14 @@ resource "aws_cloudfront_distribution" "distribution" {
     default_ttl            = 3600
     max_ttl                = 86400
 
-    lambda_function_association {
-      event_type = "viewer-request"
-      lambda_arn = var.restrict_ip_function__arn
+
+    dynamic "lambda_function_association" {
+      for_each = var.deployment_branch == "dev" ? [1] : []
+      content {
+        event_type = "viewer-request"
+        lambda_arn = var.restrict_ip_function__arn
+      }
+
     }
 
   }
