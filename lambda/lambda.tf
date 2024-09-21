@@ -245,6 +245,7 @@ resource "aws_lambda_function" "lambda_restrict_ip" {
   handler          = "restrict_ip.lambda_handler"
   runtime          = "nodejs20.x"
   timeout          = 20
+  publish          = true
 
   environment {
     variables = {
@@ -254,7 +255,7 @@ resource "aws_lambda_function" "lambda_restrict_ip" {
 }
 
 output "restrict_ip_function_arn" {
-  value = aws_lambda_function.lambda_restrict_ip.arn
+  value = "${aws_lambda_function.lambda_restrict_ip.arn}:${aws_lambda_function.lambda_restrict_ip.version}"
 }
 
 
