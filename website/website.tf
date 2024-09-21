@@ -18,9 +18,7 @@ variable "hosted_zone_name" {
   type = string
 }
 
-variable "waf_allowed_ip" {
-  type = string
-}
+
 
 provider "aws" {
   region = "us-east-1"

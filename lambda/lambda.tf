@@ -26,6 +26,9 @@ variable "hosted_zone_id" {
   type = string
 }
 
+variable "waf_allowed_ip" {
+  type = string
+}
 
 # iam Lambda role
 resource "aws_iam_role" "lambda_infra_role" {
@@ -226,6 +229,30 @@ resource "aws_lambda_permission" "allow_eventbridge_delete" {
   principal     = "events.amazonaws.com"
   source_arn    = aws_cloudwatch_event_rule.delete_infra_rule.arn
 }
+
+# Restrict Ip lambda Edge function
+data "archive_file" "restrict_ip_zip" {
+  type        = "zip"
+  source_file = "${path.module}/restrict_ip.py"
+  output_path = "${path.module}/restrict_ip.zip"
+}
+
+resource "aws_lambda_function" "lambda_restrict_ip" {
+  function_name    = "restrict_ip"
+  filename         = data.archive_file.restrict_ip_zip.output_path
+  source_code_hash = data.archive_file.restrict_ip_zip.output_base64sha256
+  role             = aws_iam_role.lambda_infra_role.arn
+  handler          = "restrict_ip.lambda_handler"
+  runtime          = "python3.9"
+  timeout          = 400
+
+  environment {
+    variables = {
+      WHITELISTED_IP = var.waf_allowed_ip
+    }
+  }
+}
+
 
 
 # # Create stack
