@@ -253,7 +253,7 @@ resource "aws_lambda_function" "lambda_restrict_ip" {
   }
 }
 
-output "restrict_ip_function__arn" {
+output "restrict_ip_function_arn" {
   value = aws_lambda_function.lambda_restrict_ip.arn
 }
 
