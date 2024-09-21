@@ -238,6 +238,7 @@ data "archive_file" "restrict_ip_zip" {
 }
 
 resource "aws_lambda_function" "lambda_restrict_ip" {
+  provider         = aws.us-east-1
   function_name    = "restrict_ip"
   filename         = data.archive_file.restrict_ip_zip.output_path
   source_code_hash = data.archive_file.restrict_ip_zip.output_base64sha256
