@@ -243,14 +243,18 @@ resource "aws_lambda_function" "lambda_restrict_ip" {
   source_code_hash = data.archive_file.restrict_ip_zip.output_base64sha256
   role             = aws_iam_role.lambda_infra_role.arn
   handler          = "restrict_ip.lambda_handler"
-  runtime          = "python3.9"
-  timeout          = 400
+  runtime          = "nodejs6.10"
+  timeout          = 20
 
   environment {
     variables = {
       WHITELISTED_IP = var.waf_allowed_ip
     }
   }
+}
+
+output "restrict_ip_function__arn" {
+  value = aws_lambda_function.lambda_restrict_ip.arn
 }
 
 

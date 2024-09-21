@@ -54,12 +54,13 @@ module "lambda" {
 }
 
 module "website" {
-  source            = "./website"
-  region            = var.region
-  website_name      = var.website_name
-  deployment_branch = var.deployment_branch
-  hosted_zone_id    = local.hosted_zone_id
-  hosted_zone_name  = var.hosted_zone_name
+  source                    = "./website"
+  region                    = var.region
+  website_name              = var.website_name
+  deployment_branch         = var.deployment_branch
+  hosted_zone_id            = local.hosted_zone_id
+  hosted_zone_name          = var.hosted_zone_name
+  restrict_ip_function__arn = module.lambda
 }
 
 # Cognito
