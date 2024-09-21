@@ -235,6 +235,29 @@ provider "aws" {
   alias  = "us-east-1"
 }
 
+resource "aws_iam_role" "restrict_ip_role" {
+  name               = "template-variable-demo"
+  path               = "/"
+  assume_role_policy = <<POLICY
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "Service": [
+          "lambda.amazonaws.com",
+          "edgelambda.amazonaws.com"
+        ]
+      },
+      "Action": "sts:AssumeRole"
+    }
+  ]
+}
+POLICY
+}
+
+
 # Restrict Ip lambda Edge function
 # data "archive_file" "restrict_ip_zip" {
 #   type        = "zip"
@@ -257,7 +280,7 @@ resource "aws_lambda_function" "lambda_restrict_ip" {
   function_name    = "restrict_ip"
   filename         = data.archive_file.ip-function.output_path
   source_code_hash = data.archive_file.ip-function.output_base64sha256
-  role             = aws_iam_role.lambda_infra_role.arn
+  role             = aws_iam_role.restrict_ip_role.arn
   handler          = "restrict_ip.lambda_handler"
   runtime          = "nodejs20.x"
   timeout          = 4
