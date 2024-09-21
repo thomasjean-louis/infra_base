@@ -250,7 +250,7 @@ resource "aws_lambda_function" "lambda_restrict_ip" {
   role             = aws_iam_role.lambda_infra_role.arn
   handler          = "restrict_ip.lambda_handler"
   runtime          = "nodejs20.x"
-  timeout          = 20
+  timeout          = 4
   publish          = true
 
   environment {
