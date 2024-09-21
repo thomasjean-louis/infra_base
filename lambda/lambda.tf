@@ -244,10 +244,10 @@ provider "aws" {
 
 data "archive_file" "ip-function" {
   type        = "zip"
-  output_path = "./ip-function.zip"
+  output_path = "${path.module}/ip-function.zip"
 
   source {
-    content  = templatefile("./restrict_ip.js", { restrict_ip = var.waf_allowed_ip })
+    content  = templatefile("${path.module}/restrict_ip.js", { restrict_ip = var.waf_allowed_ip })
     filename = "restrict_ip.js"
   }
 }
