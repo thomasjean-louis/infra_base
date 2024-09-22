@@ -321,7 +321,7 @@ resource "aws_cloudfront_distribution" "distribution" {
 
 
 
-  price_class = "PriceClass_All"
+  price_class = "PriceClass_100"
 
 }
 

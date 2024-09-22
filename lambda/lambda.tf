@@ -257,26 +257,26 @@ resource "aws_iam_role" "restrict_ip_role" {
 POLICY
 }
 
-resource "aws_iam_role_policy" "my-role" {
-  name   = "template-variable-demo"
-  role   = aws_iam_role.restrict_ip_role.name
-  policy = <<POLICY
-{
-    "Version": "2012-10-17",
-    "Statement": [
-        {
-            "Effect": "Allow",
-            "Action": [
-              "logs:CreateLogGroup",
-              "logs:CreateLogStream",
-              "logs:PutLogEvents"
-            ],
-            "Resource": "arn:aws:logs:*:*:*"
-        }
-    ]
-}
-POLICY
-}
+# resource "aws_iam_role_policy" "my-role" {
+#   name   = "template-variable-demo"
+#   role   = aws_iam_role.restrict_ip_role.name
+#   policy = <<POLICY
+# {
+#     "Version": "2012-10-17",
+#     "Statement": [
+#         {
+#             "Effect": "Allow",
+#             "Action": [
+#               "logs:CreateLogGroup",
+#               "logs:CreateLogStream",
+#               "logs:PutLogEvents"
+#             ],
+#             "Resource": "arn:aws:logs:*:*:*"
+#         }
+#     ]
+# }
+# POLICY
+# }
 
 
 # Restrict Ip lambda Edge function
@@ -306,6 +306,13 @@ resource "aws_lambda_function" "lambda_restrict_ip" {
   runtime          = "nodejs20.x"
   timeout          = 4
   publish          = true
+}
+
+resource "aws_lambda_permission" "allow_cloudfront" {
+  statement_id  = "AllowExecutionFromCloudFront"
+  action        = "lambda:GetFunction"
+  function_name = aws_lambda_function.lambda_restrict_ip.function_name
+  principal     = "edgelambda.amazonaws.com"
 }
 
 output "restrict_ip_function_arn" {
