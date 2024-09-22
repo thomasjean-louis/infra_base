@@ -17,7 +17,6 @@ jobs:
       TF_VAR_token_github: ${{secrets.TOKEN_GITHUB}}
       TF_VAR_app_name: ${{secrets.APP_NAME}}
       TF_VAR_website_name: ${{secrets.WEBSITE_NAME}}
-      TF_VAR_waf_allowed_ip: ${{secrets.WAF_ALLOWED_IP}}
 
       TF_VAR_subdomain_auth: ${{secrets.SUBDOMAIN_AUTH}}
       TF_VAR_admin_cognito_username: ${{secrets.ADMIN_COGNITO_USERNAME}}

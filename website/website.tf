@@ -18,9 +18,10 @@ variable "hosted_zone_name" {
   type = string
 }
 
-variable "restrict_ip_function__arn" {
-  type = string
-}
+
+# variable "restrict_ip_function__arn" {
+#   type = string
+# }
 
 
 
@@ -302,14 +303,6 @@ resource "aws_cloudfront_distribution" "distribution" {
     max_ttl                = 86400
 
 
-    dynamic "lambda_function_association" {
-      for_each = var.deployment_branch == "dev" ? [1] : []
-      content {
-        event_type = "viewer-request"
-        lambda_arn = var.restrict_ip_function__arn
-      }
-
-    }
 
   }
 
@@ -321,7 +314,7 @@ resource "aws_cloudfront_distribution" "distribution" {
 
 
 
-  price_class = "PriceClass_All"
+  price_class = "PriceClass_100"
 
 }
 

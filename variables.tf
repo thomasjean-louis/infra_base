@@ -45,13 +45,6 @@ variable "website_name" {
   sensitive = true
 }
 
-# WAF
-
-variable "waf_allowed_ip" {
-  type      = string
-  sensitive = true
-}
-
 ###### Cognito
 variable "subdomain_auth" {
   type      = string
