@@ -26,10 +26,6 @@ variable "hosted_zone_id" {
   type = string
 }
 
-variable "waf_allowed_ip" {
-  type = string
-}
-
 # iam Lambda role
 resource "aws_iam_role" "lambda_infra_role" {
   name = "${var.app_name}_lambda_infra_role"
@@ -229,97 +225,6 @@ resource "aws_lambda_permission" "allow_eventbridge_delete" {
   principal     = "events.amazonaws.com"
   source_arn    = aws_cloudwatch_event_rule.delete_infra_rule.arn
 }
-
-provider "aws" {
-  region = "us-east-1"
-  alias  = "us-east-1"
-}
-
-resource "aws_iam_role" "restrict_ip_role" {
-  name               = "template-variable-demo"
-  path               = "/"
-  assume_role_policy = <<POLICY
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Effect": "Allow",
-      "Principal": {
-        "Service": [
-          "lambda.amazonaws.com",
-          "edgelambda.amazonaws.com"
-        ]
-      },
-      "Action": "sts:AssumeRole"
-    }
-  ]
-}
-POLICY
-}
-
-# resource "aws_iam_role_policy" "my-role" {
-#   name   = "template-variable-demo"
-#   role   = aws_iam_role.restrict_ip_role.name
-#   policy = <<POLICY
-# {
-#     "Version": "2012-10-17",
-#     "Statement": [
-#         {
-#             "Effect": "Allow",
-#             "Action": [
-#               "logs:CreateLogGroup",
-#               "logs:CreateLogStream",
-#               "logs:PutLogEvents"
-#             ],
-#             "Resource": "arn:aws:logs:*:*:*"
-#         }
-#     ]
-# }
-# POLICY
-# }
-
-
-# Restrict Ip lambda Edge function
-# data "archive_file" "restrict_ip_zip" {
-#   type        = "zip"
-#   source_file = "${path.module}/restrict_ip.js"
-#   output_path = "${path.module}/restrict_ip.zip"
-# }
-
-data "archive_file" "ip-function" {
-  type        = "zip"
-  output_path = "${path.module}/ip-function.zip"
-
-  source {
-    content  = templatefile("${path.module}/restrict_ip.js", { restrict_ip = var.waf_allowed_ip })
-    filename = "restrict_ip.js"
-  }
-}
-
-resource "aws_lambda_function" "lambda_restrict_ip" {
-  provider         = aws.us-east-1
-  function_name    = "restrict_ip"
-  filename         = data.archive_file.ip-function.output_path
-  source_code_hash = data.archive_file.ip-function.output_base64sha256
-  role             = aws_iam_role.restrict_ip_role.arn
-  handler          = "restrict_ip.lambda_handler"
-  runtime          = "nodejs20.x"
-  timeout          = 4
-  publish          = true
-}
-
-resource "aws_lambda_permission" "allow_cloudfront" {
-  provider      = aws.us-east-1
-  statement_id  = "AllowExecutionFromCloudFront"
-  action        = "lambda:GetFunction"
-  function_name = aws_lambda_function.lambda_restrict_ip.function_name
-  principal     = "edgelambda.amazonaws.com"
-}
-
-output "restrict_ip_function_arn" {
-  value = "${aws_lambda_function.lambda_restrict_ip.arn}:${aws_lambda_function.lambda_restrict_ip.version}"
-}
-
 
 
 # # Create stack

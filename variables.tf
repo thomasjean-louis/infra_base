@@ -47,7 +47,7 @@ variable "website_name" {
 
 # WAF
 
-variable "waf_allowed_ip" {
+variable "allowed_ip" {
   type      = string
   sensitive = true
 }
