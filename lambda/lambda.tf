@@ -150,6 +150,10 @@ resource "aws_iam_role_policy" "lambda_infra_role_policy" {
   })
 }
 
+provider "aws" {
+  region = "us-east-1"
+  alias  = "us-east-1"
+}
 
 
 
