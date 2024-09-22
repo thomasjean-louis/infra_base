@@ -309,6 +309,7 @@ resource "aws_lambda_function" "lambda_restrict_ip" {
 }
 
 resource "aws_lambda_permission" "allow_cloudfront" {
+  provider      = aws.us-east-1
   statement_id  = "AllowExecutionFromCloudFront"
   action        = "lambda:GetFunction"
   function_name = aws_lambda_function.lambda_restrict_ip.function_name
