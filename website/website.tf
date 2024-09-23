@@ -18,6 +18,10 @@ variable "hosted_zone_name" {
   type = string
 }
 
+variable "cloudfront_function_arn" {
+  type = string
+}
+
 
 # variable "restrict_ip_function__arn" {
 #   type = string
@@ -276,6 +280,8 @@ resource "aws_cloudfront_distribution" "distribution" {
 
   }
 
+
+
   # web_acl_id = aws_wafv2_web_acl.waf_web_acl.arn
 
   aliases = [var.hosted_zone_name]
@@ -290,6 +296,16 @@ resource "aws_cloudfront_distribution" "distribution" {
     allowed_methods  = ["GET", "HEAD"]
     cached_methods   = ["GET", "HEAD"]
     target_origin_id = local.s3_origin_id
+
+    dynamic "function_association" {
+      for_each = var.deployment_branch == "dev" ? [1] : []
+      content {
+        event_type   = "viewer-request"
+        function_arn = var.cloudfront_function_arn
+      }
+    }
+
+
     forwarded_values {
       query_string = false
 

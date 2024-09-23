@@ -84,4 +84,10 @@ variable "user_group_name" {
   default = "user"
 }
 
+# Cloudfront
+variable "cloudfront_function_arn" {
+  type      = string
+  sensitive = true
+}
+
 
