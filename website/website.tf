@@ -297,10 +297,14 @@ resource "aws_cloudfront_distribution" "distribution" {
     cached_methods   = ["GET", "HEAD"]
     target_origin_id = local.s3_origin_id
 
-    lambda_function_association {
-      event_type = "viewer-request"
-      lambda_arn = var.cloudfront_function_arn
+    dynamic "lambda_function_association" {
+      for_each = var.deployment_branch == "dev" ? [1] : []
+      content {
+        event_type = "viewer-request"
+        lambda_arn = var.cloudfront_function_arn
+      }
     }
+
 
     forwarded_values {
       query_string = false
