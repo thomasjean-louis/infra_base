@@ -301,7 +301,7 @@ resource "aws_cloudfront_distribution" "distribution" {
       for_each = var.deployment_branch == "dev" ? [1] : []
       content {
         event_type = "viewer-request"
-        lambda_arn = "${var.cloudfront_function_arn}:1"
+        lambda_arn = "${var.cloudfront_function_arn}:1.0"
       }
     }
 
