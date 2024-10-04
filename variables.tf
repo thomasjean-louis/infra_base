@@ -90,4 +90,13 @@ variable "cloudfront_function_arn" {
   sensitive = true
 }
 
+# DynamoDB
+variable "game_monitoring_table_name" {
+  default = "gamemonitoring"
+}
+
+variable "game_monitoring_id_column_name" {
+  default = "ID"
+}
+
 

@@ -81,6 +81,14 @@ module "cognito" {
   user_group_name      = var.user_group_name
 }
 
+# DynamoDB
+module "dynamodb" {
+  source                         = "./dynamodb"
+  game_monitoring_table_name     = var.game_monitoring_table_name
+  game_monitoring_id_column_name = var.game_monitoring_id_column_name
+}
+
+
 
 
 
