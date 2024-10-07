@@ -95,6 +95,8 @@ module "ses" {
   hosted_zone_id   = local.hosted_zone_id
   region           = var.region
   admin_mail       = var.admin_mail
+  send_mail        = var.send_mail
+
 }
 
 

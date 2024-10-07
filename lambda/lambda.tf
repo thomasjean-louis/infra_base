@@ -30,8 +30,6 @@ variable "hosted_zone_id" {
 resource "aws_iam_role" "lambda_infra_role" {
   name = "${var.app_name}_lambda_infra_role"
 
-  # Terraform's "jsonencode" function converts a
-  # Terraform expression result to valid JSON syntax.
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [

@@ -18,6 +18,11 @@ variable "admin_mail" {
   sensitive = true
 }
 
+variable "send_mail" {
+  type      = string
+  sensitive = true
+}
+
 ## Route 53
 
 variable "hosted_zone_name" {
