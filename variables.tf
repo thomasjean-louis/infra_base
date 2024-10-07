@@ -13,6 +13,16 @@ variable "deployment_branch" {
   sensitive = true
 }
 
+variable "admin_mail" {
+  type      = string
+  sensitive = true
+}
+
+variable "send_mail" {
+  type      = string
+  sensitive = true
+}
+
 ## Route 53
 
 variable "hosted_zone_name" {
@@ -88,6 +98,15 @@ variable "user_group_name" {
 variable "cloudfront_function_arn" {
   type      = string
   sensitive = true
+}
+
+# DynamoDB
+variable "game_monitoring_table_name" {
+  default = "gamemonitoring"
+}
+
+variable "game_monitoring_id_column_name" {
+  default = "ID"
 }
 
 
