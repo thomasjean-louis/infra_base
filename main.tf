@@ -88,6 +88,15 @@ module "dynamodb" {
   game_monitoring_id_column_name = var.game_monitoring_id_column_name
 }
 
+# Ses, to send notification mails
+module "ses" {
+  source           = "./ses"
+  hosted_zone_name = var.hosted_zone_name
+  hosted_zone_id   = local.hosted_zone_id
+  region           = var.region
+  admin_mail       = var.admin_mail
+}
+
 
 
 

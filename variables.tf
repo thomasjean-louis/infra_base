@@ -13,6 +13,11 @@ variable "deployment_branch" {
   sensitive = true
 }
 
+variable "admin_mail" {
+  type      = string
+  sensitive = true
+}
+
 ## Route 53
 
 variable "hosted_zone_name" {
