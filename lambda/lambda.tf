@@ -231,26 +231,25 @@ resource "aws_lambda_permission" "allow_eventbridge_delete" {
 
 # Auto Create stack only for prod env
 resource "aws_cloudwatch_event_rule" "create_infra_rule" {
-  count = (var.deployment_branch == "dev") ? 0 : 1
-  name  = "create_infra_rule"
-
+  name                = "create_infra_rule"
   schedule_expression = "cron(55 6 ? * MON-FRI *)"
+  count               = (var.deployment_branch == "dev") ? 0 : 1
 }
 
 
 resource "aws_cloudwatch_event_target" "create_infra_lambda_target" {
-  count     = (var.deployment_branch == "dev") ? 0 : 1
   rule      = aws_cloudwatch_event_rule.create_infra_rule.name
   target_id = "SendToLambda"
   arn       = aws_lambda_function.lambda_create_infra.arn
+  count     = (var.deployment_branch == "dev") ? 0 : 1
 }
 
 resource "aws_lambda_permission" "allow_eventbridge_create" {
-  count         = (var.deployment_branch == "dev") ? 0 : 1
   statement_id  = "AllowExecutionFromEventBridge"
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.lambda_create_infra.function_name
   principal     = "events.amazonaws.com"
   source_arn    = aws_cloudwatch_event_rule.create_infra_rule.arn
+  count         = (var.deployment_branch == "dev") ? 0 : 1
 }
 
