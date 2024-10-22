@@ -32,6 +32,9 @@ jobs:
       - run: 'echo "ENV: ${{ github.ref_name }}"'
       - name: Checkout code
         uses: actions/checkout@v4
+      - run: terraform init -backend-config="access_key=${{ secrets.ACCESS_KEY_STATE }}" -backend-config="secret_key=${{ secrets.SECRET_ACCESS_KEY_STATE }}" -backend-config="bucket=${{ secrets.BUCKET_NAME_STATE }}" -backend-config="key=${{ secrets.KEY_STATE }}" -backend-config="region=eu-west-3"
+      - run: terraform apply -auto-approve
+      
       - name: Create release
         env:
           GITHUB_TOKEN: ${{ secrets.TOKEN_GITHUB }}
@@ -42,5 +45,4 @@ jobs:
               --title="${GITHUB_REPOSITORY#*/} ${tag#v}" \
               --generate-notes
       
-      - run: terraform init -backend-config="access_key=${{ secrets.ACCESS_KEY_STATE }}" -backend-config="secret_key=${{ secrets.SECRET_ACCESS_KEY_STATE }}" -backend-config="bucket=${{ secrets.BUCKET_NAME_STATE }}" -backend-config="key=${{ secrets.KEY_STATE }}" -backend-config="region=eu-west-3"
-      - run: terraform apply -auto-approve
+      
