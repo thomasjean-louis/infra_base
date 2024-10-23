@@ -14,6 +14,10 @@ variable "deployment_branch" {
   type = string
 }
 
+variable "git_branch" {
+  type = string
+}
+
 variable "token_github" {
   type = string
 }
@@ -43,6 +47,15 @@ resource "aws_iam_role" "lambda_infra_role" {
       },
     ]
   })
+}
+
+data "aws_iam_policy" "lambda_managed_policy" {
+  arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+}
+
+resource "aws_iam_role_policy_attachment" "lambda_infra_managed_policy" {
+  role       = aws_iam_role.lambda_infra_role.name
+  policy_arn = data.aws_iam_policy.lambda_managed_policy.arn
 }
 
 # IAM role
@@ -174,7 +187,7 @@ resource "aws_lambda_function" "lambda_create_infra" {
   environment {
     variables = {
       TOKEN_GITHUB      = var.token_github
-      DEPLOYMENT_BRANCH = var.deployment_branch
+      DEPLOYMENT_BRANCH = var.git_branch
     }
   }
 }
@@ -198,7 +211,7 @@ resource "aws_lambda_function" "lambda_delete_infra" {
   environment {
     variables = {
       TOKEN_GITHUB      = var.token_github
-      DEPLOYMENT_BRANCH = var.deployment_branch
+      DEPLOYMENT_BRANCH = var.git_branch
       HOSTED_ZONE_ID    = var.hosted_zone_id
     }
   }
