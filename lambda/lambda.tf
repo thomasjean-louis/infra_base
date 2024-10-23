@@ -228,6 +228,10 @@ resource "aws_lambda_permission" "allow_eventbridge_delete" {
   source_arn    = aws_cloudwatch_event_rule.delete_infra_rule.arn
 }
 
+resource "aws_cloudwatch_log_group" "log_group_delete_infra" {
+  name = "/aws/lambda/${aws_lambda_function.lambda_delete_infra.function_name}"
+}
+
 
 # Auto Create stack only for prod env
 resource "aws_cloudwatch_event_rule" "create_infra_rule" {

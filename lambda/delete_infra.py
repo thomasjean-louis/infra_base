@@ -12,7 +12,7 @@ def lambda_handler(event, context):
   stacks = cf_stacks.list_stacks(StackStatusFilter=['CREATE_COMPLETE', 'UPDATE_COMPLETE', 'DELETE_FAILED'])
   for stack in stacks['StackSummaries']:
     stack_name = stack['StackName']
-    if "index-builder" in stack_name      
+    if "index-builder" in stack_name:      
       continue
 
     print(f"Deleting stack: {stack_name}")
