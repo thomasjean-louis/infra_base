@@ -47,6 +47,7 @@ module "lambda" {
   account_id        = local.account_id
   app_name          = var.app_name
   deployment_branch = var.deployment_branch
+  git_branch        = var.git_branch
   token_github      = var.token_github
   hosted_zone_id    = local.hosted_zone_id
   hosted_zone_name  = var.hosted_zone_name

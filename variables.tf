@@ -13,6 +13,10 @@ variable "deployment_branch" {
   sensitive = true
 }
 
+variable "git_branch" {
+  default = "default"
+}
+
 variable "admin_mail" {
   type      = string
   sensitive = true
