@@ -1,7 +1,7 @@
 # Infra_base
 Terraform repository used to manage resources available 24/7 and deployed on aws Dev and Prod accounts. 
 
-## Built resources
+## Resources
 
 ### Access and rights
 IAM users, roles, policies used by the [Terraform repo](https://github.com/thomasjean-louis/infra) to manage the resources needed for the "Serverless multi-player game" demo project.
@@ -19,8 +19,7 @@ DynamoDb table and Cloudwatch log groups to keep track of past events (new conne
 
 ### Demo
 Resources that have to be built before the [demo terraform deployment](https://github.com/thomasjean-louis/infra) :
-* Cognito users
-* Docker images in ECR repository (proxy, game servers)
-
+* Cognito users,
+* ECR repositories, to host [proxy](https://github.com/thomasjean-louis/proxy) and [game](https://github.com/thomasjean-louis/gameserver) servers docker images. 
 
 
