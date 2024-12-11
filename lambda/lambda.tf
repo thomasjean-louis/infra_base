@@ -156,6 +156,13 @@ resource "aws_iam_role_policy" "lambda_infra_role_policy" {
         ]
         Effect   = "Allow"
         Resource = "arn:aws:acm:${var.region}:${var.account_id}:certificate/*"
+      },
+      {
+        Action = [
+          "logs:DeleteLogGroup"
+        ]
+        Effect   = "Allow"
+        Resource = "arn:aws:logs:${var.region}:${var.account_id}:log-group:/*"
       }
     ]
   })
