@@ -6,7 +6,7 @@ on:
 jobs:
   deploy:
     environment: ${{ github.ref_name }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     env:
       AWS_ACCESS_KEY_ID: ${{ secrets.ACCESS_KEY_INFRA }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.SECRET_ACCESS_KEY_INFRA }}
