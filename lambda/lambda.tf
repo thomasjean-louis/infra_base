@@ -230,7 +230,7 @@ resource "aws_lambda_function" "lambda_delete_infra" {
 resource "aws_cloudwatch_event_rule" "delete_infra_rule" {
   name = "delete_infra_rule"
 
-  schedule_expression = "cron(0 17 ? * MON-FRI *)"
+  schedule_expression = "cron(0 15 ? * MON-FRI *)"
 }
 
 
@@ -258,7 +258,7 @@ resource "aws_cloudwatch_event_rule" "create_infra_rule" {
   count = (var.deployment_branch == "dev") ? 0 : 1
 
   name                = "create_infra_rule"
-  schedule_expression = "cron(55 7 ? * MON-FRI *)"
+  schedule_expression = "cron(55 11 ? * MON-FRI *)"
 
 }
 
