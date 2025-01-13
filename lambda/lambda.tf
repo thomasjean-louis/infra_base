@@ -227,11 +227,11 @@ resource "aws_lambda_function" "lambda_delete_infra" {
 ## Set Scheduler
 
 # Delete stack
-resource "aws_cloudwatch_event_rule" "delete_infra_rule" {
-  name = "delete_infra_rule"
+# resource "aws_cloudwatch_event_rule" "delete_infra_rule" {
+#   name = "delete_infra_rule"
 
-  schedule_expression = "cron(0 15 ? * MON-FRI *)"
-}
+#   schedule_expression = "cron(0 15 ? * MON-FRI *)"
+# }
 
 
 resource "aws_cloudwatch_event_target" "delete_infra_lambda_target" {
@@ -254,13 +254,13 @@ resource "aws_cloudwatch_log_group" "log_group_delete_infra" {
 
 
 # Auto Create stack only for prod env
-resource "aws_cloudwatch_event_rule" "create_infra_rule" {
-  count = (var.deployment_branch == "dev") ? 0 : 1
+# resource "aws_cloudwatch_event_rule" "create_infra_rule" {
+#   count = (var.deployment_branch == "dev") ? 0 : 1
 
-  name                = "create_infra_rule"
-  schedule_expression = "cron(55 11 ? * MON-FRI *)"
+#   name                = "create_infra_rule"
+#   schedule_expression = "cron(55 11 ? * MON-FRI *)"
 
-}
+# }
 
 
 resource "aws_cloudwatch_event_target" "create_infra_lambda_target" {
